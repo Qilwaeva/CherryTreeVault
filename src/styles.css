@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+::view-transition-old(sub-view),
+::view-transition-new(sub-view) {
+  animation-duration: 100ms;
+  @apply transition-opacity transform;
+}
+
+html, body{
+  @apply bg-base-100 text-base-content;
+}
