@@ -1,10 +1,11 @@
-import { Component, enableProdMode } from "@angular/core";
+import { Component, enableProdMode, OnInit } from "@angular/core";
 import { getConfig } from "./config/config";
 import { bootstrapApplication } from "@angular/platform-browser";
 import { provideHttpClient } from "@angular/common/http";
 import { provideRouter, RouterOutlet } from "@angular/router";
 import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 import routeConfig from "./routes";
+import { SupabaseService } from "./app/services/supabase.service";
 
 
 if (getConfig().env === 'prod') {
@@ -18,11 +19,17 @@ if (getConfig().env === 'prod') {
     standalone: true,
 })
 
-class AppComponent {
+class AppComponent implements OnInit {
   constructor(
-      private matIconReg: MatIconRegistry
+      private matIconReg: MatIconRegistry,
+      private readonly supabase: SupabaseService
     ) {}
-}
+  session: any
+  ngOnInit() {
+    // this.session = this.supabase.session
+    // this.supabase.authChanges((_, session) => (this.session = session))
+  }
+}  
 
 bootstrapApplication(AppComponent, {
   providers: [provideRouter(routeConfig), provideHttpClient()]

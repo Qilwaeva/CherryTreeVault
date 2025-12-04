@@ -22,6 +22,7 @@
     "@angular/router": "^20.2.3",
     "@ng-icons/core": "^32.1.0",
     "@ng-icons/material-icons": "^32.1.0",
+    "@supabase/supabase-js": "^2.86.0",
     "ag-grid-angular": "^34.2.0",
     "daisyui": "^4.12.14",
     "postcss": "^8.4.47",

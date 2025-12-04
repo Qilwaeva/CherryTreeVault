@@ -1,6 +1,15 @@
-<div class="flex">
+
+@if (session) {
+  <div class="flex">
     Welcome
     <button class="flex items-center border border-base-content join-item py-1 px-2.5 text-center" type="button" (click)="generateCodes()">
       Run
-  </button>
-</div>
+    </button>
+    <button class="flex items-center border border-base-content join-item py-1 px-2.5 text-center" type="button" (click)="logout()">
+        Logout
+    </button>
+  </div>
+
+} @else {
+    <app-auth></app-auth>
+}
