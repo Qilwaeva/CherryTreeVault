@@ -1,30 +1,29 @@
-import { CanActivateFn, Router, Routes} from '@angular/router';
+import { CanActivateFn, Router, Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { Landing } from './app/pages/landing.page';
 import { LayoutDefault } from './app/layouts/default.layout';
 
 export const adminGuard: CanActivateFn = (next, state) => {
-  const router = inject(Router)
+  const router = inject(Router);
   // const selfService = inject(SelfService)
 
   return new Promise((resolve) => {
     // selfService.getIsAdmin().subscribe((res) => {
     //   if (res) return resolve(true)
-
     //   return resolve(
     //     router.navigate(["/error"], {
     //       queryParams: { title: "Not Authorized", description: "Only admins are authorized to access this page"}
     //     })
     //   )
     // })
-  })
-}
+  });
+};
 
 const routeConfig: Routes = [
   {
-    path: "",
+    path: '',
     component: LayoutDefault,
-    children:[
+    children: [
       {
         path: 'home',
         component: Landing,
@@ -33,7 +32,7 @@ const routeConfig: Routes = [
       {
         path: '',
         redirectTo: 'home',
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       // {
       //   path: 'cards',
@@ -57,7 +56,7 @@ const routeConfig: Routes = [
       //   loadComponent: () => import('./app/pages/advanced-search.page').then(m => m.PageAdvancedSearch),
       //   title: 'Advanced Search',
       // },
-    ]
-  }
+    ],
+  },
 ];
 export default routeConfig;

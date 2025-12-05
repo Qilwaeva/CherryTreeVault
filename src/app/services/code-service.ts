@@ -1,14 +1,18 @@
 import { Injectable } from "@angular/core";
 import { VaultCode } from "../../models/vault-code";
+import { SupabaseService } from "./supabase.service";
 
 
 @Injectable({ providedIn: "root"})
 export class CodeService {
+  constructor(
+    private readonly supabase: SupabaseService,
+  ) {}
 
     ngOnInit() {}
 
     // Generate all the codes we want to test
-    generateAllCodes(excludeDigits: number[], codeLength: number, vaultDate: string) {
+    generateAllCodes(excludeDigits: number[], codeLength: number, vaultName: string) {
         var startingCode = ""
         // Get initial all 0s code
         for (let i = 0; i < codeLength; i++) {
@@ -32,7 +36,7 @@ export class CodeService {
                     code: currentCode,
                     status: 'not-started',
                     assignee: null,
-                    date: vaultDate,
+                    name: vaultName,
                     validateOne: null,
                     validateTwo: null
                 })
@@ -42,6 +46,7 @@ export class CodeService {
             currentCode = this.addLeadingZeroes(nextCode, startingCode)
         } while(currentCode.length == codeLength)
         
+        this.supabase.insertRows(validCodes)
         console.log('pause')
         // store codes
     }

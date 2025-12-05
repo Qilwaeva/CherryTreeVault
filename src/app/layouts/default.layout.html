@@ -1,12 +1,12 @@
 <div class="antialiased">
-    <main style="view-transition-name: sub-view;">
-        <!-- <top-bar class="w-full"></top-bar> -->
-        <!-- @if(isAuthenticated()){ }  -->
-        <!-- @if (session) { -->
-            
-        <router-outlet />
-        <!-- } @else {
-            <app-auth></app-auth>
-        } -->
-    </main>
+  <main style="view-transition-name: sub-view">
+    <!-- <top-bar class="w-full"></top-bar> -->
+    <!-- @if(isAuthenticated()){ }  -->
+    @if (session) {
+    <!-- <app-account [session]="session"></app-account> -->
+    <router-outlet />
+    } @else {
+    <app-auth></app-auth>
+    }
+  </main>
 </div>
