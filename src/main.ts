@@ -18,12 +18,7 @@ if (getConfig().env === 'prod') {
   standalone: true,
 })
 class AppComponent implements OnInit {
-  constructor(
-    private matIconReg: MatIconRegistry,
-    private readonly supabase: SupabaseService
-  ) {}
-  session: any;
-  profile: Profile | null = null;
+  constructor() {}
   ngOnInit() {}
 }
 

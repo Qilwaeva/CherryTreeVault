@@ -34,6 +34,11 @@ export class SupabaseService {
     return data;
   }
 
+  worker(username: string) {
+    let data = this.supabase.from('workers').select('*').eq('username', username).single();
+    return data;
+  }
+
   authChanges(callback: (event: AuthChangeEvent, session: Session | null) => void) {
     return this.supabase.auth.onAuthStateChange(callback);
   }
@@ -73,24 +78,108 @@ export class SupabaseService {
     return this.supabase.storage.from('avatars').upload(filePath, file);
   }
 
-  insertRows(codes: VaultCode[]) {
-    for (let code of codes) {
-      this.supabase
-        .from('VaultCode')
-        .insert([
-          {
-            code: code.code,
-            status: code.status,
-            assignee: code.assignee,
-            name: code.name,
-            validateOne: code.validateOne,
-            validateTwo: code.validateTwo,
-          },
-        ])
-        .select()
-        .then(({ data }) => {
-          return data;
-        });
+  async insertCodes(codes: VaultCode[]) {
+    // for (let code of codes) {
+    await this.supabase
+      .from('VaultCode')
+      .insert(codes)
+      .select()
+      .then(({ data }) => {
+        return data;
+      });
+    // }
+  }
+
+  async getCodes() {
+    let data = await this.supabase.from('VaultCode').select('*');
+    return data;
+  }
+
+  async setAssignee(codes: VaultCode[], assignee: string) {
+    await this.supabase
+      .from('VaultCode')
+      .update([
+        {
+          assignee: assignee,
+        },
+      ])
+      .eq('vaultName', codes[0].vaultName)
+      .in(
+        'code',
+        codes.map((c) => c.code)
+      );
+  }
+
+  async setStatus(codes: VaultCode[], status: 'valid' | 'invalid' | 'in-progress') {
+    await this.supabase
+      .from('VaultCode')
+      .update([
+        {
+          status: status,
+        },
+      ])
+      .eq('vaultName', codes[0].vaultName)
+      .in(
+        'code',
+        codes.map((c) => c.code)
+      );
+  }
+
+  // Get worker, or create one if one doesn't exist
+  async getWorker(username: string) {
+    let { data: worker, error, status } = await this.worker(username);
+    // This is just from returning no results, is not an error
+    if (error && status !== 406) {
+      throw error;
     }
+    if (!worker) {
+      // return this.createWorker(username);
+      return null;
+    } else {
+      return worker;
+    }
+  }
+
+  async createWorker(username: string) {
+    let data = await this.supabase
+      .from('workers')
+      .insert([{ username: username, codes_attempted: 0, vaults_participated: 0, correct_codes: 0 }])
+      .select()
+      .single();
+    return data.data;
+  }
+
+  async validateCode(code: VaultCode) {
+    let data = await this.supabase
+      .from('VaultCode')
+      .update([
+        {
+          status: code.status,
+          validateOne: code.validateOne,
+          validateTwo: code.validateTwo,
+        },
+      ])
+      .eq('vaultName', code.vaultName)
+      .eq('code', code.code);
+    return data;
+  }
+
+  async getAllOtherCodes(code: VaultCode) {
+    let data = await this.supabase
+      .from('VaultCode')
+      .update([
+        {
+          status: 'invalid',
+        },
+      ])
+      .eq('vaultName', code.vaultName)
+      .neq('code', code.code);
+    // let data = await this.supabase.from('VaultCode').select('*').eq('vaultName', code.vaultName).neq('code', code.code);
+    return data;
+  }
+
+  async getSetting(name: string) {
+    let data = await this.supabase.from('Settings').select('*').eq('setting_name', name).single();
+    return data.data.setting_value;
   }
 }

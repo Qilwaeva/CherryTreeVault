@@ -6,27 +6,29 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthSession } from '@supabase/supabase-js';
 import { AccountComponent } from './user/account';
+import { VaultCode } from '../../models/vault-code';
+import { ActivitySwitcher } from '../components/activity-switcher/activity-switcher';
 
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.page.html',
-  imports: [CommonModule],
+  imports: [CommonModule, ActivitySwitcher],
   standalone: true,
 })
 export class Landing {
-  profile!: Profile;
+  profile = signal<Profile | null>(null);
+  session = signal<AuthSession | null>(null);
+
   constructor(
     private readonly supabase: SupabaseService,
     private readonly codeService: CodeService,
     private router: Router
   ) {}
-  // session = this.supabase.session;
-  session = signal<AuthSession | null>(null);
+
   ngOnInit() {
     this.supabase.authChanges((_, session) => {
       this.session.set(session);
       if (this.session()) {
-        // check auth change types
         this.getProfile();
       }
     });
@@ -41,7 +43,7 @@ export class Landing {
       }
 
       if (profile) {
-        this.profile = profile;
+        this.profile.set(profile);
       }
     } catch (error: any) {
       alert(error.message);
@@ -50,7 +52,17 @@ export class Landing {
   }
 
   generateCodes() {
-    this.codeService.generateAllCodes([1, 2], 1, 'December 2025');
+    this.codeService.generateAllCodes([1, 2, 3, 4, 5, 6], 1, 'December1 2025', this.session());
+    // let code: VaultCode = {
+    //   code: '00000707',
+    //   status: 'in-progress',
+    //   assignee: null,
+    //   vaultName: 'December 2025',
+    //   validateOne: null,
+    //   validateTwo: null,
+    // };
+    // this.codeService.markCodeValidated(code, 'name');
+    // this.codeService.markCodeValidated(code, 'name2');
   }
 
   logout() {
