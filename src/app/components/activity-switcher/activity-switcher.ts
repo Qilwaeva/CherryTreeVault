@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Profile, SupabaseService } from '../../services/supabase.service';
 import { CommonModule } from '@angular/common';
 import { HistoricalComponent } from '../historical/historical-component';
-import { CurrentComponent } from '../current/current-component';
+import { CurrentComponent } from '../current-vault/current-component';
 import { AuthSession } from '@supabase/supabase-js';
 
 enum Activity {
@@ -19,7 +19,7 @@ enum Activity {
 })
 export class ActivitySwitcher {
   Activity = Activity;
-  activity = signal<Activity>(Activity.Historical);
+  activity = signal<Activity>(Activity.CurrentVault);
   session = input.required<AuthSession | null>();
   profile = input.required<Profile | null>();
   constructor() {}

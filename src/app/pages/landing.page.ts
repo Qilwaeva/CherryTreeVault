@@ -52,7 +52,10 @@ export class Landing {
   }
 
   generateCodes() {
-    this.codeService.generateAllCodes([1, 2, 3, 4, 5, 6], 1, 'December1 2025', this.session());
+    this.supabase.getCurrentWorkers().then((res) => {
+      console.log();
+    });
+    // this.codeService.generateAllCodes([1, 2, 3, 4, 5, 6], 2, 'December1 2025', this.session());
     // let code: VaultCode = {
     //   code: '00000707',
     //   status: 'in-progress',

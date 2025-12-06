@@ -1,11 +1,11 @@
-import { Component, enableProdMode, OnInit } from '@angular/core';
+import { Component, enableProdMode, importProvidersFrom, OnInit } from '@angular/core';
 import { getConfig } from './config/config';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter, RouterOutlet } from '@angular/router';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import routeConfig from './routes';
-import { Profile, SupabaseService } from './app/services/supabase.service';
+import { MarkdownModule } from 'ngx-markdown';
 
 if (getConfig().env === 'prod') {
   enableProdMode();
@@ -23,5 +23,5 @@ class AppComponent implements OnInit {
 }
 
 bootstrapApplication(AppComponent, {
-  providers: [provideRouter(routeConfig), provideHttpClient()],
+  providers: [provideRouter(routeConfig), provideHttpClient(), importProvidersFrom(MarkdownModule.forRoot())],
 }).catch((err) => console.error(err));

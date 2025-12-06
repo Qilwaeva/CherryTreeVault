@@ -49,7 +49,7 @@ export class CodeService {
     this.supabase.insertCodes(validCodes).then(() => {
       this.supabase.getCodes().then((data) => {
         // TODO remove testing code
-        this.updateCodeAssignee(data.data!, 'testUser1');
+        // this.updateCodeAssignee(data.data!, 'testUser1');
         // this.updateCodeStatus(data.data!, 'in-progress');
         console.log('pause');
       });
@@ -68,12 +68,16 @@ export class CodeService {
     return paddedCode;
   }
 
-  assignCodes(assignee: string, numberOfCodes: number): VaultCode[] {
-    // query codes where not started
+  async assignCodes(assignee: string, numberOfCodes: number): Promise<VaultCode[]> {
     var newCodes: VaultCode[] = [];
-    this.updateCodeAssignee(newCodes, assignee);
-    this.updateCodeStatus(newCodes, 'in-progress');
-
+    // query codes where not started
+    let activeVault = await this.supabase.getSetting('active_vault');
+    let codesRes = await this.supabase.queryNextCodes(numberOfCodes, activeVault);
+    if (codesRes && codesRes?.length > 0) {
+      newCodes = codesRes;
+      this.updateCodeAssignee(newCodes, assignee);
+      this.updateCodeStatus(newCodes, 'in-progress');
+    }
     return newCodes;
   }
 
@@ -108,7 +112,7 @@ export class CodeService {
         console.log('pause');
       });
       // mark all others invalid
-      this.supabase.getAllOtherCodes(code);
+      this.supabase.invalidateAllOtherCodes(code);
     }
   }
 }

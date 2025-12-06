@@ -9,6 +9,18 @@
   @apply transition-opacity transform;
 }
 
-html, body{
+html,
+body {
   @apply bg-base-100 text-base-content;
+}
+
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }

@@ -149,6 +149,17 @@ export class SupabaseService {
     return data.data;
   }
 
+  // Get all workers with codes currently in progress
+  async getCurrentWorkers() {
+    let data = await this.supabase.from('workers').select('*, VaultCode!inner()').eq('VaultCode.status', 'in-progress');
+    return data;
+  }
+
+  async getCodesByWorker(username: string) {
+    let data = await this.supabase.from('VaultCode').select('*').eq('assignee', username);
+    return data.data;
+  }
+
   async validateCode(code: VaultCode) {
     let data = await this.supabase
       .from('VaultCode')
@@ -164,7 +175,8 @@ export class SupabaseService {
     return data;
   }
 
-  async getAllOtherCodes(code: VaultCode) {
+  // Set all codes but specified to invalid
+  async invalidateAllOtherCodes(code: VaultCode) {
     let data = await this.supabase
       .from('VaultCode')
       .update([
@@ -181,5 +193,11 @@ export class SupabaseService {
   async getSetting(name: string) {
     let data = await this.supabase.from('Settings').select('*').eq('setting_name', name).single();
     return data.data.setting_value;
+  }
+
+  // Find the next X codes in the given vault
+  async queryNextCodes(number: number, vaultName: string) {
+    let data = await this.supabase.from('VaultCode').select('*').eq('vaultName', vaultName).eq('status', 'not-started').limit(number);
+    return data.data;
   }
 }
