@@ -57,6 +57,28 @@ export class SupabaseService {
     });
   }
 
+  signUpPass(email: string, password: string, profile: Profile) {
+    return this.supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: {
+          username: profile.username,
+          admin: profile.admin,
+          vault_manager: profile.vault_manager,
+        },
+      },
+    });
+  }
+
+  signInPass(email: string, password: string) {
+    return this.supabase.auth.signInWithPassword({
+      email,
+      password: password,
+    });
+  }
+
   signOut() {
     return this.supabase.auth.signOut();
   }
