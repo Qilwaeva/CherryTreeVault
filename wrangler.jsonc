@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "my-worker",
+  "name": "cherry-tree-vault",
   "main": "src/main.ts",
   "compatibility_date": "2022-07-12",
   "workers_dev": false,
