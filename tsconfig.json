@@ -29,6 +29,10 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
+	"include": [
+    "worker-configuration.d.ts", 
+    "src/**/*.ts"
+  ],
   "exclude": [
       "node_modules",
       "dist",
