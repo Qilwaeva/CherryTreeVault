@@ -7,7 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "format": "prettier src/ --write --cache"
+    "format": "prettier src/ --write --cache",
+    "generate-types": "wrangler types",
+		"deploy": "wrangler deploy"
   },
   "private": true,
   "dependencies": {
@@ -23,15 +25,11 @@
     "@ng-icons/core": "^32.1.0",
     "@ng-icons/material-icons": "^32.1.0",
     "@supabase/supabase-js": "^2.86.0",
-    "ag-grid-angular": "^34.2.0",
     "daisyui": "^4.12.14",
     "ngx-markdown": "^20.1.0",
-    "rxjs": "~7.8.1",
-    "sql.js": "^1.13.0",
     "tailwindcss": "^3.4.14",
     "tslib": "^2.3.0",
-    "wrangler": "^4.53.0",
-    "zone.js": "~0.15.1"
+    "wrangler": "^4.53.0"
   },
   "devDependencies": {
     "@angular/cli": "^20.2.1",
