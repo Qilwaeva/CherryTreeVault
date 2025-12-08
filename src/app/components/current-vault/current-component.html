@@ -84,12 +84,76 @@
       <input type="radio" name="my-accordion-3" checked="checked" />
       <div class="collapse-title font-semibold text-center text-info-content">Manage Existing Codes</div>
       <div class="collapse-content text-sm">
-        <manage-codes [session]="session()"></manage-codes>
+        <manage-codes class="" [session]="session()"></manage-codes>
       </div>
     </div>
   </div>
   } @else {
   <!-- button to generate codes and new vault with given constraints and name -->
+  <div class="bg-base-100 border-2 border-base-300 rounded-md m-3">
+    <div class="font-semibold text-center text-info-content m-4">Generate New Vault</div>
+    <form [formGroup]="vaultForm" class="form-widget px-2">
+      <div class="flex justify-center">
+        <div>
+          <div class="flex row py-1">
+            <div class="flex items-center pr-2">
+              <label for="vaultName">Vault Name:</label>
+            </div>
+            <input
+              type="text"
+              id="vaultName"
+              formControlName="vaultName"
+              class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+              placeholder="Vault Name"
+            />
+          </div>
+          <div class="flex row py-1">
+            <div class="flex items-center pr-2">
+              <label for="totalDigits">Number of Digits:</label>
+            </div>
+            <input
+              type="number"
+              id="totalDigits"
+              formControlName="totalDigits"
+              class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            />
+          </div>
+          <div class="flex row py-1">
+            <div class="flex items-center pr-2">
+              <label for="excludeDigits">Exclude Digits:</label>
+            </div>
+            <input
+              type="number"
+              id="excludeDigits"
+              formControlName="excludeDigits"
+              class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            />
+          </div>
+
+          <button class="flex btn mx-auto bg-secondary text-secondary-content m-2" type="submit" (click)="generateVault()">
+            {{ generateLoading ? "Loading..." : "Generate" }}
+          </button>
+          @if (!submitValid) {
+          <div class="text-error">Validation Error: {{validationError}}</div>
+          } @if (copyableCodes.length > 0) {
+          <div class="flex justify-center py-3">
+            <div class="flex border border-base-content rounded-md">
+              <div markdown ngPreserveWhitespaces>{{copyableCodes}}</div>
+
+              <button
+                class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm"
+                [cdkCopyToClipboard]="discordFormat()"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+
+          }
+        </div>
+      </div>
+    </form>
+  </div>
   } } @else {
   <div class="flex w-full justify-center p-2">Only Vault Managers can make modifications to the current vault</div>
   }

@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, ElementRef, input, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -20,6 +20,7 @@ export class ManageCodes {
   session = input.required<AuthSession | null>();
   currentWorkers: Worker[] = [];
   workerTasks: WorkerTask[] = [];
+  // @ViewChild('manageWorkerCodes') dialog: ElementRef;
 
   constructor(
     private readonly codeService: CodeService,
@@ -35,15 +36,16 @@ export class ManageCodes {
     this.supabase.getCurrentWorkers().then((res) => {
       if (res.data != null && res.data.length > 0) {
         this.currentWorkers = res.data;
-        for (let worker of this.currentWorkers) {
-          this.supabase.getCodesByWorker(worker.username).then((codeRes) => {
-            if (codeRes != null && codeRes.length > 0) {
-              let task: WorkerTask = { worker: worker, codes: codeRes };
-              this.workerTasks.push(task);
-              console.log();
-            }
-          });
-        }
+      }
+    });
+  }
+
+  getWorkerCodes(worker: Worker) {
+    this.supabase.getCodesByWorker(worker.username).then((codeRes) => {
+      if (codeRes != null && codeRes.length > 0) {
+        let task: WorkerTask = { worker: worker, codes: codeRes };
+        this.workerTasks.push(task);
+        console.log();
       }
     });
   }

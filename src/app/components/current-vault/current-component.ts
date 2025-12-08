@@ -9,6 +9,7 @@ import { VaultCode } from '../../../models/vault-code';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MarkdownModule } from 'ngx-markdown';
 import { ManageCodes } from './manage-codes/manage-codes';
+import { VaultForm } from '../../../models/vault-form';
 
 @Component({
   selector: 'current-component',
@@ -23,6 +24,7 @@ export class CurrentComponent {
   formatKeys = ['None', 'Underlined', 'Bold'];
 
   assignCodesForm!: FormGroup;
+  vaultForm!: FormGroup;
   constructor(
     private readonly codeService: CodeService,
     private readonly supabase: SupabaseService,
@@ -30,6 +32,7 @@ export class CurrentComponent {
   ) {}
 
   submitLoading = false;
+  generateLoading = false;
   requestForm: CodeForm = {
     worker: '',
     totalCodes: 0,
@@ -43,20 +46,25 @@ export class CurrentComponent {
 
   ngOnInit() {
     // See if there's a vault currently active
-    // this.supabase.getSetting('active_vault').then((res) => {
-    //   if (!res) {
-    //     this.vaultActive = false;
-    //   } else {
-    //     this.vaultActive = true;
-    //   }
-    // }); TODO
+    this.supabase.getSetting('active_vault').then((res) => {
+      if (!res) {
+        this.vaultActive = false;
+      } else {
+        this.vaultActive = true;
+      }
+    });
     this.assignCodesForm = this.formBuilder.group({
       username: '',
       quantity: 0,
       grouping: 0,
       formatting: 'None',
     });
-    this.vaultActive = true;
+    this.vaultForm = this.formBuilder.group({
+      vaultName: '',
+      totalDigits: 0,
+      excludeDigits: [],
+    });
+    // this.vaultActive = true;
   }
 
   changeFormatting(event: any) {
@@ -151,7 +159,6 @@ export class CurrentComponent {
             numberString = numberString + currentCode.code.at(j);
           }
         }
-        console.log('pause');
       } else {
         numberString = numberString + currentCode.code;
       }
@@ -174,5 +181,28 @@ export class CurrentComponent {
     discordMd = discordMd.replaceAll(ulRegexClose, '__');
     discordMd = discordMd.replaceAll(brRegex, '  ');
     return discordMd;
+  }
+
+  generateVault() {
+    try {
+      this.generateLoading = true;
+      let vaultName = this.vaultForm.value.vaultName as string;
+      let totalDigits = this.vaultForm.value.totalDigits as number;
+      let excludeNum = this.vaultForm.value.excludeDigits as number;
+      let excludeDigits = excludeNum.toString().split('');
+      console.log('pause');
+      // this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName, this.session());
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+        this.generateLoading = false;
+      }
+    } finally {
+      // if (this.submitValid) {
+      //   this.requestCodes();
+      //   this.vaultForm.reset();
+      // }
+      this.generateLoading = false;
+    }
   }
 }
