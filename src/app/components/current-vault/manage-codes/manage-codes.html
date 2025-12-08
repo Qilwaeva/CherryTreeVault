@@ -1,0 +1,77 @@
+<div class="items-center pr-8">
+  <div class="text-base-content text-center">Select worker to manage assigned codes</div>
+  <div class="grid grid-cols-8 gap-10 p-10">
+    <div *ngFor="let worker of currentWorkers">
+      <div class="flex border border-base-content rounded-md items-center justify-center cursor-pointer" (click)="selectWorker(worker)">
+        <div class="m-2">{{worker.username}}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<dialog #manageWorkerCodes class="modal">
+  <div class="modal-box max-w-screen-md contain-style flex flex-col">
+    <div class="collapse-title font-semibold text-center text-info-content">Manage Codes for {{selectedWorker?.username}}</div>
+    <div class="flex row">
+      <button class="flex btn btn-md bg-error text-error-content border-error-content m-1 text-sm">Mark All Invalid</button>
+      <!-- <button class="flex btn btn-xs bg-error text-error-content border-error-content m-1 text-sm">Mark Some Invalid</button> -->
+      <!-- <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm">Unassign</button> -->
+    </div>
+    There will be unassign and mark some as invalid options in MVP +1 @if (workerTasks().length > 0) {
+    <div class="grid grid-cols-2">
+      <div class="flex justify-center py-3 col-span-1">
+        @if (copyableCodes.length > 0) {
+        <div class="flex border border-base-content rounded-md py-2 px-4">
+          <div markdown ngPreserveWhitespaces>{{copyableCodes()}}</div>
+        </div>
+        } @else {
+        <div class="border border-base-content rounded-md py-2 px-4">
+          <div *ngFor="let code of workerTasks()">{{code.code}}<br /></div>
+        </div>
+        }
+      </div>
+      <div class="col-span-1 col-start-2">
+        <form [formGroup]="formatCodesForm" class="form-widget">
+          <div class="flex row py-1">
+            <div class="flex items-center pr-2">
+              <label for="grouping">Group By #:</label>
+            </div>
+            <input
+              type="number"
+              id="grouping"
+              formControlName="grouping"
+              class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            />
+          </div>
+          <div class="flex row py-1">
+            <div class="flex items-center pr-2">
+              <label for="formatting">Formatting:</label>
+            </div>
+            <select
+              id="formatting"
+              formControlName="formatting"
+              class="select select-bordered border-base-content bg-base-200 text-base-content w-48 ml-auto"
+              (change)="changeFormatting($event)"
+            >
+              <option *ngFor="let option of formatKeys">{{option}}</option>
+            </select>
+          </div>
+          <div class="flex flex-row">
+            <!-- <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="formatCodes()">
+              Format
+            </button> -->
+            <!-- <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="formatCodes()">
+              Copy Again
+            </button> -->
+          </div>
+        </form>
+      </div>
+    </div>
+
+    }
+    <div class="modal-action flex">
+      <!-- buttons to close modal -->
+      <button class="btn" (click)="manageWorkerCodesModal().nativeElement.close()">Close</button>
+    </div>
+  </div>
+</dialog>

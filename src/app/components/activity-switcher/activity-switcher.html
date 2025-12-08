@@ -1,0 +1,29 @@
+<div class="flex w-full justify-center">
+  <div class="row flex">
+    <div role="tablist" class="tabs tabs-border tabs-bordered">
+      <a
+        role="tab"
+        class="tab"
+        [ngClass]="{
+            'tab-active' : activity() === Activity.CurrentVault
+        }"
+        (click)="activity.set(Activity.CurrentVault)"
+        >Current Vault</a
+      >
+      <a
+        role="tab"
+        class="tab"
+        [ngClass]="{
+            'tab-active' : activity() === Activity.Historical
+        }"
+        (click)="activity.set(Activity.Historical)"
+        >Historical</a
+      >
+    </div>
+  </div>
+</div>
+@if (activity() === Activity.CurrentVault) {
+<current-component [user]="user()" [profile]="profile()"></current-component>
+} @else if (activity() === Activity.Historical) {
+<historical-component></historical-component>
+}

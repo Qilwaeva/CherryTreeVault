@@ -1,0 +1,14 @@
+<div class="px-4 py-8">
+  @if (profile()) {
+  <button class="flex btn ml-auto" type="button" (click)="logout()">Logout</button>
+  }
+  <div class="flex w-full justify-center">
+    <div class="flex items-center justify-center">Welcome to CherryTree Vault Cracking!</div>
+  </div>
+</div>
+
+<div class="flex px-4 py-8 w-full">
+  <activity-switcher class="w-full" [user]="user()" [profile]="profile()"></activity-switcher>
+</div>
+
+<button class="flex btn" type="button" (click)="generateCodes()">Run</button>
