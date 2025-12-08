@@ -1,7 +1,7 @@
-import { Component, ElementRef, input, signal, viewChild, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, input, signal, viewChild, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ClipboardModule } from '@angular/cdk/clipboard';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { MarkdownModule } from 'ngx-markdown';
 import { CodeService } from '../../../services/code-service';
 import { SupabaseService } from '../../../services/supabase.service';
@@ -13,7 +13,7 @@ import { WorkerTask } from '../../../../models/worker-task';
 @Component({
   selector: 'manage-codes',
   templateUrl: './manage-codes.html',
-  imports: [CommonModule, ReactiveFormsModule, ClipboardModule, MarkdownModule],
+  imports: [CommonModule, ReactiveFormsModule, MarkdownModule],
   standalone: true,
 })
 export class ManageCodes {
@@ -21,9 +21,9 @@ export class ManageCodes {
   currentWorkers: Worker[] = [];
   workerTasks = signal<VaultCode[]>([]);
   tasksLoading = false;
-  copyableCodes = '';
+  copyableCodes = signal<string>('');
   formatKeys = ['None', 'Underlined', 'Bold'];
-  formatting = '';
+  formatting = 'None';
   formatCodesForm!: FormGroup;
 
   manageWorkerCodesModal = viewChild.required<ElementRef<HTMLDialogElement>>('manageWorkerCodes');
@@ -32,15 +32,14 @@ export class ManageCodes {
   constructor(
     private readonly codeService: CodeService,
     private readonly supabase: SupabaseService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private clipboard: Clipboard
   ) {}
 
   ngOnInit() {
     this.getActiveWorkers();
 
     this.formatCodesForm = this.formBuilder.group({
-      username: '',
-      quantity: 0,
       grouping: 0,
       formatting: 'None',
     });
@@ -68,7 +67,6 @@ export class ManageCodes {
         if (codeRes != null && codeRes.length > 0) {
           this.workerTasks.set(codeRes);
           // this.formatCodes();
-          console.log();
         }
       })
       .finally(() => {
@@ -81,8 +79,15 @@ export class ManageCodes {
   }
 
   formatCodes() {
-    let formatting = ''; // TODO add buttons to decide formatting on re-copy
     let grouping = this.formatCodesForm.value.grouping as number;
-    this.copyableCodes = this.codeService.formatCodes(this.workerTasks()!, this.formatting, grouping);
+    this.copyableCodes.set(this.codeService.formatCodes(this.workerTasks()!, this.formatting, grouping));
+    this.clipboard.copy(this.copyableCodes());
+
+    console.log();
+  }
+
+  copyAgain() {
+    this.copyableCodes.set(this.codeService.discordFormat(this.copyableCodes()));
+    this.clipboard.copy(this.copyableCodes());
   }
 }
