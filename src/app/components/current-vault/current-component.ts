@@ -123,7 +123,6 @@ export class CurrentComponent {
       let totalDigits = this.vaultForm.value.totalDigits as number;
       let excludeNum = this.vaultForm.value.excludeDigits as number;
       let excludeDigits = excludeNum.toString().split('');
-      console.log('pause');
       this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName);
     } catch (error) {
       if (error instanceof Error) {
