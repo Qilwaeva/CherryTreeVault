@@ -20,7 +20,7 @@ import { VaultForm } from '../../../models/vault-form';
 export class CurrentComponent {
   user = input.required<User | null>();
   profile = input.required<Profile | null>();
-  vaultActive: boolean = false;
+  vaultActive = signal<boolean>(false);
   formatKeys = ['None', 'Underlined', 'Bold'];
 
   assignCodesForm!: FormGroup;
@@ -45,14 +45,7 @@ export class CurrentComponent {
   copyableCodes = '';
 
   ngOnInit() {
-    // See if there's a vault currently active
-    this.supabase.getSetting('active_vault').then((res) => {
-      if (!res) {
-        this.vaultActive = false;
-      } else {
-        this.vaultActive = true;
-      }
-    });
+    this.checkActiveVault();
     this.assignCodesForm = this.formBuilder.group({
       username: '',
       quantity: 0,
@@ -65,6 +58,17 @@ export class CurrentComponent {
       excludeDigits: [],
     });
     // this.vaultActive = true;
+  }
+
+  checkActiveVault() {
+    // See if there's a vault currently active
+    this.supabase.getSetting('active_vault').then((res) => {
+      if (!res) {
+        this.vaultActive.set(false);
+      } else {
+        this.vaultActive.set(true);
+      }
+    });
   }
 
   changeFormatting(event: any) {
@@ -116,14 +120,14 @@ export class CurrentComponent {
     return this.codeService.discordFormat(this.copyableCodes);
   }
 
-  generateVault() {
+  async generateVault() {
     try {
       this.generateLoading = true;
       let vaultName = this.vaultForm.value.vaultName as string;
       let totalDigits = this.vaultForm.value.totalDigits as number;
       let excludeNum = this.vaultForm.value.excludeDigits as number;
       let excludeDigits = excludeNum.toString().split('');
-      this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName);
+      let generate = await this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -135,6 +139,7 @@ export class CurrentComponent {
         this.vaultForm.reset();
       }
       this.generateLoading = false;
+      this.checkActiveVault();
     }
   }
 }
