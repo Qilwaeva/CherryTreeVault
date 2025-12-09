@@ -34,18 +34,18 @@
       <!-- <button class="flex btn btn-xs bg-error text-error-content border-error-content m-1 text-sm">Mark Some Invalid</button> -->
       <!-- <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm">Unassign</button> -->
     </div>
-    There will be unassign and mark some as invalid options in MVP +1 @if (workerTasks().length > 0) {
+    There will be unassign and mark some as invalid options in MVP +1 @if (copyableCodes().length > 0) {
     <div class="grid grid-cols-2">
       <div class="flex justify-center py-3 col-span-1">
-        @if (copyableCodes.length > 0) {
+        <!-- @if (copyableCodes.length > 0) { -->
         <div class="flex border border-base-content rounded-md py-2 px-4">
           <div markdown ngPreserveWhitespaces>{{copyableCodes()}}</div>
         </div>
-        } @else {
+        <!-- } @else {
         <div class="border border-base-content rounded-md py-2 px-4">
           <div *ngFor="let code of workerTasks()">{{code.code}}<br /></div>
         </div>
-        }
+        } -->
       </div>
       <div class="col-span-1 col-start-2">
         <form [formGroup]="formatCodesForm" class="form-widget">
@@ -74,12 +74,12 @@
             </select>
           </div>
           <div class="flex flex-row">
-            <!-- <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="formatCodes()">
+            <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="formatCodes()">
               Format
-            </button> -->
-            <!-- <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="formatCodes()">
+            </button>
+            <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="copyAgain()">
               Copy Again
-            </button> -->
+            </button>
           </div>
         </form>
       </div>

@@ -72,6 +72,8 @@ export class ManageCodes {
       .then((codeRes) => {
         if (codeRes != null && codeRes.length > 0) {
           this.workerTasks.set(codeRes);
+
+          this.copyableCodes.set(this.codeService.formatCodes(this.workerTasks()!, 'None', 0));
           // this.formatCodes();
         }
       })
@@ -81,6 +83,7 @@ export class ManageCodes {
   }
 
   validateCode() {
+    // TODO add feedback to user after all is done
     this.validateError.set('');
     let code = this.validateCodeForm.value.code as string;
     let vaultName = '';
@@ -93,6 +96,7 @@ export class ManageCodes {
           } else {
             let vaultCode = vCode;
             this.codeService.markCodeValidated(vCode, this.profile()!.username);
+            // TODO give the user that had the code credit for all prior codes in their batch
           }
         });
       }
@@ -106,13 +110,14 @@ export class ManageCodes {
   formatCodes() {
     let grouping = this.formatCodesForm.value.grouping as number;
     this.copyableCodes.set(this.codeService.formatCodes(this.workerTasks()!, this.formatting, grouping));
-    this.clipboard.copy(this.copyableCodes());
+    // this.clipboard.copy(this.copyableCodes());
 
     console.log();
   }
 
   copyAgain() {
     this.copyableCodes.set(this.codeService.discordFormat(this.copyableCodes()));
-    this.clipboard.copy(this.copyableCodes());
+    // this.clipboard.copy(this.copyableCodes());
+    navigator.clipboard.writeText(this.copyableCodes());
   }
 }
