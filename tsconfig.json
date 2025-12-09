@@ -27,12 +27,12 @@
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": true,
   },
-	"include": [
-    "worker-configuration.d.ts", 
-    "src/**/*.ts"
-  ],
+	// "include": [
+  //   "worker-configuration.d.ts", 
+  //   "src/**/*.ts"
+  // ],
   "exclude": [
       "node_modules",
       "dist",

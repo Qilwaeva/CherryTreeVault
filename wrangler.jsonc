@@ -1,32 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "cherry-tree-vault",
-  "main": "src/main.ts",
-  "compatibility_date": "2022-07-12",
-  "workers_dev": false,
-  // "route": {
-  //   "pattern": "example.org/*",
-  //   "zone_name": "example.org"
-  // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "<MY_NAMESPACE>",
-  //     "id": "<KV_ID>"
-  //   }
-  // ],
-  // "env": {
-  //   "staging": {
-  //     "name": "my-worker-staging",
-  //     "route": {
-  //       "pattern": "staging.example.org/*",
-  //       "zone_name": "example.org"
-  //     },
-  //     "kv_namespaces": [
-  //       {
-  //         "binding": "<MY_NAMESPACE>",
-  //         "id": "<STAGING_KV_ID>"
-  //       }
-  //     ]
-  //   }
-  // }
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2022-07-12"
 }
