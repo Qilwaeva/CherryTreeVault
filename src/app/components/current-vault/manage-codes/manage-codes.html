@@ -30,7 +30,9 @@
   <div class="modal-box max-w-screen-md contain-style flex flex-col">
     <div class="collapse-title font-semibold text-center text-info-content">Manage Codes for {{selectedWorker?.username}}</div>
     <div class="flex row">
-      <button class="flex btn btn-md bg-error text-error-content border-error-content m-1 text-sm">Mark All Invalid</button>
+      <button class="flex btn btn-md bg-error text-error-content border-error-content m-1 text-sm" (click)="markInvalid()">
+        Mark All Invalid
+      </button>
       <!-- <button class="flex btn btn-xs bg-error text-error-content border-error-content m-1 text-sm">Mark Some Invalid</button> -->
       <!-- <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm">Unassign</button> -->
     </div>

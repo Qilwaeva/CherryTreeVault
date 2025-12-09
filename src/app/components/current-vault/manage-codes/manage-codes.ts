@@ -120,4 +120,10 @@ export class ManageCodes {
     // this.clipboard.copy(this.copyableCodes());
     navigator.clipboard.writeText(this.copyableCodes());
   }
+
+  markInvalid() {
+    this.codeService.updateCodeStatus(this.workerTasks(), 'invalid');
+    this.workerTasks.set([]);
+    this.manageWorkerCodesModal().nativeElement.close();
+  }
 }
