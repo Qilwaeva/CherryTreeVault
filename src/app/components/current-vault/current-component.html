@@ -63,12 +63,9 @@
               } @if (copyableCodes.length > 0) {
               <div class="flex justify-center py-3">
                 <div class="flex border border-base-content rounded-md">
-                  <div markdown ngPreserveWhitespaces>{{copyableCodes}}</div>
+                  <div markdown ngPreserveWhitespaces>{{copyableCodes()}}</div>
 
-                  <button
-                    class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm"
-                    [cdkCopyToClipboard]="discordFormat()"
-                  >
+                  <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="discordFormat()">
                     Copy
                   </button>
                 </div>
@@ -133,23 +130,6 @@
           <button class="flex btn mx-auto bg-secondary text-secondary-content m-2" type="submit" (click)="generateVault()">
             {{ generateLoading ? "Loading..." : "Generate" }}
           </button>
-          @if (!submitValid) {
-          <div class="text-error">Validation Error: {{validationError}}</div>
-          } @if (copyableCodes.length > 0) {
-          <div class="flex justify-center py-3">
-            <div class="flex border border-base-content rounded-md">
-              <div markdown ngPreserveWhitespaces>{{copyableCodes}}</div>
-              <!-- TODO change how copy to clipboard works here -->
-              <button
-                class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm"
-                [cdkCopyToClipboard]="discordFormat()"
-              >
-                Copy
-              </button>
-            </div>
-          </div>
-
-          }
         </div>
       </div>
     </form>

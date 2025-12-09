@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, input, signal, viewChild, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Clipboard } from '@angular/cdk/clipboard';
 import { MarkdownModule } from 'ngx-markdown';
 import { CodeService } from '../../../services/code-service';
 import { Profile, SupabaseService } from '../../../services/supabase.service';
@@ -28,6 +27,7 @@ export class ManageCodes {
   formatCodesForm!: FormGroup;
   validateCodeForm!: FormGroup;
   validateError = signal<string>('');
+  validateFeedback = signal<string>('');
 
   manageWorkerCodesModal = viewChild.required<ElementRef<HTMLDialogElement>>('manageWorkerCodes');
   selectedWorker?: Worker;
@@ -35,8 +35,7 @@ export class ManageCodes {
   constructor(
     private readonly codeService: CodeService,
     private readonly supabase: SupabaseService,
-    private readonly formBuilder: FormBuilder,
-    private clipboard: Clipboard
+    private readonly formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -83,7 +82,7 @@ export class ManageCodes {
   }
 
   validateCode() {
-    // TODO add feedback to user after all is done
+    this.validateFeedback.set('');
     this.validateError.set('');
     let code = this.validateCodeForm.value.code as string;
     let vaultName = '';
@@ -95,8 +94,18 @@ export class ManageCodes {
             this.validateError.set('This is not a valid code for the current vault, please resubmit');
           } else {
             let vaultCode = vCode;
-            this.codeService.markCodeValidated(vCode, this.profile()!.username);
-            // TODO give the user that had the code credit for all prior codes in their batch
+            // Give user credit for all the codes they tried before the successful one
+            this.supabase.getCodesByWorker(vaultCode.assignee).then((codeRes) => {
+              if (codeRes != null && codeRes.length > 0) {
+                let codeIndex = codeRes.findIndex((c: VaultCode) => c.code === vaultCode.code);
+                let attemptedCodes = codeRes.splice(0, codeIndex);
+                this.codeService.updateCodeStatus(attemptedCodes, 'invalid');
+
+                this.codeService.markCodeValidated(vCode, this.profile()!.username).then((res) => {
+                  this.validateFeedback.set(res);
+                });
+              }
+            });
           }
         });
       }
@@ -116,9 +125,8 @@ export class ManageCodes {
   }
 
   copyAgain() {
-    this.copyableCodes.set(this.codeService.discordFormat(this.copyableCodes()));
-    // this.clipboard.copy(this.copyableCodes());
-    navigator.clipboard.writeText(this.copyableCodes());
+    let discordFormat = this.codeService.discordFormat(this.copyableCodes());
+    navigator.clipboard.writeText(discordFormat);
   }
 
   markInvalid() {
