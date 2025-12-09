@@ -1,5 +1,7 @@
 <div class="items-center pr-8">
   <div class="text-base-content text-center">Select worker to manage assigned codes</div>
+  <button class="flex btn btn-md bg-success text-success-content border-success-content m-1 text-sm">Select Valid</button>
+  this button is pending
   <div class="grid grid-cols-8 gap-10 p-10">
     <div *ngFor="let worker of currentWorkers">
       <div class="flex border border-base-content rounded-md items-center justify-center cursor-pointer" (click)="selectWorker(worker)">
