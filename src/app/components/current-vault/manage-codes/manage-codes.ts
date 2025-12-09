@@ -27,6 +27,7 @@ export class ManageCodes {
   formatting = 'None';
   formatCodesForm!: FormGroup;
   validateCodeForm!: FormGroup;
+  validateError = signal<string>('');
 
   manageWorkerCodesModal = viewChild.required<ElementRef<HTMLDialogElement>>('manageWorkerCodes');
   selectedWorker?: Worker;
@@ -80,15 +81,19 @@ export class ManageCodes {
   }
 
   validateCode() {
-    // TODO make sure the code entered actually is a code
+    this.validateError.set('');
     let code = this.validateCodeForm.value.code as string;
     let vaultName = '';
     this.supabase.getSetting('active_vault').then((res) => {
       if (res) {
         vaultName = res;
         this.supabase.getCodebyCode(code, vaultName).then((vCode) => {
-          let vaultCode = vCode;
-          this.codeService.markCodeValidated(vCode, this.profile()!.username);
+          if (vCode == null) {
+            this.validateError.set('This is not a valid code for the current vault, please resubmit');
+          } else {
+            let vaultCode = vCode;
+            this.codeService.markCodeValidated(vCode, this.profile()!.username);
+          }
         });
       }
     });
