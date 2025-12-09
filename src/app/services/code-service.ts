@@ -9,7 +9,7 @@ export class CodeService {
   ngOnInit() {}
 
   // Generate all the codes we want to test
-  generateAllCodes(excludeDigits: string[], codeLength: number, vaultName: string) {
+  async generateAllCodes(excludeDigits: string[], codeLength: number, vaultName: string) {
     var startingCode = '';
     // Get initial all 0s code
     for (let i = 0; i < codeLength; i++) {
@@ -44,14 +44,14 @@ export class CodeService {
       currentCode = this.addLeadingZeroes(nextCode, startingCode);
     } while (currentCode.length == codeLength);
 
-    this.supabase.insertCodes(validCodes).then(() => {
-      this.supabase.getCodes().then((data) => {
-        // TODO remove testing code
-        // this.updateCodeAssignee(data.data!, 'testUser1');
-        // this.updateCodeStatus(data.data!, 'in-progress');
-        console.log('pause');
-      });
-    });
+    let codeWait = await this.supabase.insertCodes(validCodes);
+    let vaultConfirm = await this.supabase.createNewVault(vaultName);
+    console.log('pause');
+    // this.supabase.getCodes().then((data) => {
+    // TODO remove testing code
+    // this.updateCodeAssignee(data.data!, 'testUser1');
+    // this.updateCodeStatus(data.data!, 'in-progress');
+    // });
   }
 
   // Don't want to lose leading zeroes when converting

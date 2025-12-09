@@ -225,6 +225,18 @@ export class SupabaseService {
     return data.data.setting_value;
   }
 
+  async createNewVault(name: string) {
+    let data = await this.supabase
+      .from('Settings')
+      .update([
+        {
+          setting_value: name,
+        },
+      ])
+      .eq('setting_name', 'active_vault');
+    return data.data;
+  }
+
   // Find the next X codes in the given vault
   async queryNextCodes(number: number, vaultName: string) {
     let data = await this.supabase.from('VaultCode').select('*').eq('vaultName', vaultName).eq('status', 'not-started').limit(number);
