@@ -124,17 +124,17 @@ export class CurrentComponent {
       let excludeNum = this.vaultForm.value.excludeDigits as number;
       let excludeDigits = excludeNum.toString().split('');
       console.log('pause');
-      // this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName, this.session());
+      this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
         this.generateLoading = false;
       }
     } finally {
-      // if (this.submitValid) {
-      //   this.requestCodes();
-      //   this.vaultForm.reset();
-      // }
+      if (this.submitValid) {
+        // this.requestCodes();
+        this.vaultForm.reset();
+      }
       this.generateLoading = false;
     }
   }

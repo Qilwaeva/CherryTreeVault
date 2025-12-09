@@ -9,7 +9,7 @@ export class CodeService {
   ngOnInit() {}
 
   // Generate all the codes we want to test
-  generateAllCodes(excludeDigits: number[], codeLength: number, vaultName: string) {
+  generateAllCodes(excludeDigits: string[], codeLength: number, vaultName: string) {
     var startingCode = '';
     // Get initial all 0s code
     for (let i = 0; i < codeLength; i++) {
@@ -22,7 +22,7 @@ export class CodeService {
       var valid = true;
       // Confirm number contains none of the excluded digits
       for (let digit of excludeDigits) {
-        if (currentCode.includes(digit.toString())) {
+        if (currentCode.includes(digit)) {
           valid = false;
           break;
         }
