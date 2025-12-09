@@ -137,9 +137,11 @@ export class CodeService {
         numberString = numberString + currentCode.code;
       }
 
-      // Extra newline for grouping
-      if (grouping % (i + 1) == 0) {
-        numberString = numberString + '<br>';
+      if (grouping != 0) {
+        // Extra newline for grouping
+        if ((i + 1) % grouping == 0) {
+          numberString = numberString + '<br>';
+        }
       }
       copyableCodes = copyableCodes + numberString;
       lastCode = currentCode;
@@ -154,7 +156,7 @@ export class CodeService {
     let brRegex = '<br>'; // TODO: discord newline not working
     let discordMd = copyableCodes.replaceAll(ulRegexOpen, '__');
     discordMd = discordMd.replaceAll(ulRegexClose, '__');
-    discordMd = discordMd.replaceAll(brRegex, '  ');
+    discordMd = discordMd.replaceAll(brRegex, '\r\n');
     return discordMd;
   }
 }

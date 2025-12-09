@@ -60,6 +60,7 @@ export class CurrentComponent {
     // this.vaultActive = true;
   }
 
+  // TODO send emit back to this to check the vault again so it can be remade
   checkActiveVault() {
     // See if there's a vault currently active
     this.supabase.getSetting('active_vault').then((res) => {

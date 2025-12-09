@@ -187,7 +187,7 @@ export class SupabaseService {
   }
 
   async getCodesByWorker(username: string) {
-    let data = await this.supabase.from('VaultCode').select('*').eq('assignee', username);
+    let data = await this.supabase.from('VaultCode').select('*').eq('assignee', username).eq('status', 'in-progress');
     return data.data;
   }
 

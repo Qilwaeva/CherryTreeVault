@@ -1,16 +1,21 @@
 <div class="items-center pr-8">
-  <form [formGroup]="validateCodeForm" class="form-widget">
-    <div class="flex row py-1">
-      <div class="flex items-center pr-2">
-        <label for="code">Code:</label>
+  <div class="">
+    <form [formGroup]="validateCodeForm" class="form-widget">
+      <div class="flex row py-1 justify-center">
+        <div class="flex items-center pr-2">
+          <label for="code">Code:</label>
+        </div>
+        <input type="test" id="code" formControlName="code" class="input border border-base-content bg-base-200 w-48 input-md" />
       </div>
-      <input type="test" id="code" formControlName="code" class="input border border-base-content bg-base-200 w-48 input-md" />
-    </div>
-  </form>
-  <button class="flex btn btn-md bg-success text-success-content border-success-content m-1 text-sm" (click)="validateCode()">
-    Select Valid
-  </button>
-  trying to force deploy
+    </form>
+    <button class="flex btn btn-md bg-success text-success-content border-success-content m-1 text-sm mx-auto" (click)="validateCode()">
+      Select Valid
+    </button>
+    @if (validateError().length > 0) {
+    <div class="text-error text-center">Validation Error: {{validateError()}}</div>
+    }
+  </div>
+  <div class="divider divider-vertical"></div>
   <div class="text-base-content text-center">Select worker to manage assigned codes</div>
   <div class="grid grid-cols-8 gap-10 p-10">
     <div *ngFor="let worker of currentWorkers">
@@ -25,22 +30,24 @@
   <div class="modal-box max-w-screen-md contain-style flex flex-col">
     <div class="collapse-title font-semibold text-center text-info-content">Manage Codes for {{selectedWorker?.username}}</div>
     <div class="flex row">
-      <button class="flex btn btn-md bg-error text-error-content border-error-content m-1 text-sm">Mark All Invalid</button>
+      <button class="flex btn btn-md bg-error text-error-content border-error-content m-1 text-sm" (click)="markInvalid()">
+        Mark All Invalid
+      </button>
       <!-- <button class="flex btn btn-xs bg-error text-error-content border-error-content m-1 text-sm">Mark Some Invalid</button> -->
       <!-- <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm">Unassign</button> -->
     </div>
-    There will be unassign and mark some as invalid options in MVP +1 @if (workerTasks().length > 0) {
+    There will be unassign and mark some as invalid options in MVP +1 @if (copyableCodes().length > 0) {
     <div class="grid grid-cols-2">
       <div class="flex justify-center py-3 col-span-1">
-        @if (copyableCodes.length > 0) {
+        <!-- @if (copyableCodes.length > 0) { -->
         <div class="flex border border-base-content rounded-md py-2 px-4">
           <div markdown ngPreserveWhitespaces>{{copyableCodes()}}</div>
         </div>
-        } @else {
+        <!-- } @else {
         <div class="border border-base-content rounded-md py-2 px-4">
           <div *ngFor="let code of workerTasks()">{{code.code}}<br /></div>
         </div>
-        }
+        } -->
       </div>
       <div class="col-span-1 col-start-2">
         <form [formGroup]="formatCodesForm" class="form-widget">
@@ -69,12 +76,12 @@
             </select>
           </div>
           <div class="flex flex-row">
-            <!-- <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="formatCodes()">
+            <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="formatCodes()">
               Format
-            </button> -->
-            <!-- <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="formatCodes()">
+            </button>
+            <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="copyAgain()">
               Copy Again
-            </button> -->
+            </button>
           </div>
         </form>
       </div>

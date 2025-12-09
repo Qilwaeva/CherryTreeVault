@@ -27,6 +27,7 @@ export class ManageCodes {
   formatting = 'None';
   formatCodesForm!: FormGroup;
   validateCodeForm!: FormGroup;
+  validateError = signal<string>('');
 
   manageWorkerCodesModal = viewChild.required<ElementRef<HTMLDialogElement>>('manageWorkerCodes');
   selectedWorker?: Worker;
@@ -71,6 +72,8 @@ export class ManageCodes {
       .then((codeRes) => {
         if (codeRes != null && codeRes.length > 0) {
           this.workerTasks.set(codeRes);
+
+          this.copyableCodes.set(this.codeService.formatCodes(this.workerTasks()!, 'None', 0));
           // this.formatCodes();
         }
       })
@@ -80,15 +83,21 @@ export class ManageCodes {
   }
 
   validateCode() {
-    // TODO make sure the code entered actually is a code
+    // TODO add feedback to user after all is done
+    this.validateError.set('');
     let code = this.validateCodeForm.value.code as string;
     let vaultName = '';
     this.supabase.getSetting('active_vault').then((res) => {
       if (res) {
         vaultName = res;
         this.supabase.getCodebyCode(code, vaultName).then((vCode) => {
-          let vaultCode = vCode;
-          this.codeService.markCodeValidated(vCode, this.profile()!.username);
+          if (vCode == null) {
+            this.validateError.set('This is not a valid code for the current vault, please resubmit');
+          } else {
+            let vaultCode = vCode;
+            this.codeService.markCodeValidated(vCode, this.profile()!.username);
+            // TODO give the user that had the code credit for all prior codes in their batch
+          }
         });
       }
     });
@@ -101,13 +110,20 @@ export class ManageCodes {
   formatCodes() {
     let grouping = this.formatCodesForm.value.grouping as number;
     this.copyableCodes.set(this.codeService.formatCodes(this.workerTasks()!, this.formatting, grouping));
-    this.clipboard.copy(this.copyableCodes());
+    // this.clipboard.copy(this.copyableCodes());
 
     console.log();
   }
 
   copyAgain() {
     this.copyableCodes.set(this.codeService.discordFormat(this.copyableCodes()));
-    this.clipboard.copy(this.copyableCodes());
+    // this.clipboard.copy(this.copyableCodes());
+    navigator.clipboard.writeText(this.copyableCodes());
+  }
+
+  markInvalid() {
+    this.codeService.updateCodeStatus(this.workerTasks(), 'invalid');
+    this.workerTasks.set([]);
+    this.manageWorkerCodesModal().nativeElement.close();
   }
 }
