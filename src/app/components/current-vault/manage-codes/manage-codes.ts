@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MarkdownModule } from 'ngx-markdown';
 import { CodeService } from '../../../services/code-service';
-import { SupabaseService } from '../../../services/supabase.service';
+import { Profile, SupabaseService } from '../../../services/supabase.service';
 import { AuthSession, User } from '@supabase/supabase-js';
 import { VaultCode } from '../../../../models/vault-code';
 import { Worker } from '../../../../models/worker';
@@ -18,6 +18,7 @@ import { WorkerTask } from '../../../../models/worker-task';
 })
 export class ManageCodes {
   user = input.required<User | null>();
+  profile = input.required<Profile | null>();
   currentWorkers: Worker[] = [];
   workerTasks = signal<VaultCode[]>([]);
   tasksLoading = false;
@@ -25,6 +26,7 @@ export class ManageCodes {
   formatKeys = ['None', 'Underlined', 'Bold'];
   formatting = 'None';
   formatCodesForm!: FormGroup;
+  validateCodeForm!: FormGroup;
 
   manageWorkerCodesModal = viewChild.required<ElementRef<HTMLDialogElement>>('manageWorkerCodes');
   selectedWorker?: Worker;
@@ -42,6 +44,9 @@ export class ManageCodes {
     this.formatCodesForm = this.formBuilder.group({
       grouping: 0,
       formatting: 'None',
+    });
+    this.validateCodeForm = this.formBuilder.group({
+      code: '',
     });
   }
 
@@ -72,6 +77,20 @@ export class ManageCodes {
       .finally(() => {
         this.tasksLoading = false;
       });
+  }
+
+  validateCode() {
+    let code = this.validateCodeForm.value.code as string;
+    let vaultName = '';
+    this.supabase.getSetting('active_vault').then((res) => {
+      if (res) {
+        vaultName = res;
+        this.supabase.getCodebyCode(code, vaultName).then((vCode) => {
+          let vaultCode = vCode;
+          this.codeService.markCodeValidated(vCode, this.profile()!.username);
+        });
+      }
+    });
   }
 
   changeFormatting(event: any) {
