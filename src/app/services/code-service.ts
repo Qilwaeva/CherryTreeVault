@@ -39,7 +39,6 @@ export class CodeService {
           validateTwo: null,
         });
       }
-      // console.log('code: ' + currentCode);
       var nextCode = parseInt(currentCode) + 1;
       currentCode = this.addLeadingZeroes(nextCode, startingCode);
     } while (currentCode.length == codeLength);
