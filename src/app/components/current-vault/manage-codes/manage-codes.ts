@@ -1,11 +1,11 @@
-import { Component, ElementRef, input, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, signal, viewChild, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MarkdownModule } from 'ngx-markdown';
 import { CodeService } from '../../../services/code-service';
 import { SupabaseService } from '../../../services/supabase.service';
-import { AuthSession } from '@supabase/supabase-js';
+import { AuthSession, User } from '@supabase/supabase-js';
 import { VaultCode } from '../../../../models/vault-code';
 import { Worker } from '../../../../models/worker';
 import { WorkerTask } from '../../../../models/worker-task';
@@ -17,10 +17,14 @@ import { WorkerTask } from '../../../../models/worker-task';
   standalone: true,
 })
 export class ManageCodes {
-  session = input.required<AuthSession | null>();
+  user = input.required<User | null>();
   currentWorkers: Worker[] = [];
-  workerTasks: WorkerTask[] = [];
-  // @ViewChild('manageWorkerCodes') dialog: ElementRef;
+  workerTasks?: WorkerTask;
+  tasksLoading = false;
+  copyableCodes = '';
+
+  manageWorkerCodesModal = viewChild.required<ElementRef<HTMLDialogElement>>('manageWorkerCodes');
+  selectedWorker?: Worker;
 
   constructor(
     private readonly codeService: CodeService,
@@ -40,13 +44,30 @@ export class ManageCodes {
     });
   }
 
+  selectWorker(worker: Worker) {
+    this.selectedWorker = worker;
+    this.manageWorkerCodesModal().nativeElement.showModal();
+    this.tasksLoading = true;
+    this.getWorkerCodes(worker);
+  }
+
   getWorkerCodes(worker: Worker) {
-    this.supabase.getCodesByWorker(worker.username).then((codeRes) => {
-      if (codeRes != null && codeRes.length > 0) {
-        let task: WorkerTask = { worker: worker, codes: codeRes };
-        this.workerTasks.push(task);
-        console.log();
-      }
-    });
+    this.supabase
+      .getCodesByWorker(worker.username)
+      .then((codeRes) => {
+        if (codeRes != null && codeRes.length > 0) {
+          this.workerTasks = { worker: worker, codes: codeRes };
+          console.log();
+        }
+      })
+      .finally(() => {
+        this.tasksLoading = false;
+      });
+  }
+
+  formatCodes() {
+    let formatting = ''; // TODO add buttons to decide formatting on re-copy
+    let grouping = 0;
+    this.codeService.formatCodes(this.workerTasks!.codes, formatting, grouping);
   }
 }

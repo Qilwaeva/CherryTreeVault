@@ -4,7 +4,7 @@ import { Profile, SupabaseService } from '../services/supabase.service';
 import { AuthComponent } from '../pages/user/auth';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
-import { AuthSession } from '@supabase/supabase-js';
+import { AuthSession, User } from '@supabase/supabase-js';
 import { AccountComponent } from './user/account';
 import { VaultCode } from '../../models/vault-code';
 import { ActivitySwitcher } from '../components/activity-switcher/activity-switcher';
@@ -17,7 +17,7 @@ import { ActivitySwitcher } from '../components/activity-switcher/activity-switc
 })
 export class Landing {
   profile = signal<Profile | null>(null);
-  session = signal<AuthSession | null>(null);
+  user = signal<User | null>(null);
 
   constructor(
     private readonly supabase: SupabaseService,
@@ -26,17 +26,20 @@ export class Landing {
   ) {}
 
   ngOnInit() {
-    this.supabase.authChanges((_, session) => {
-      this.session.set(session);
-      if (this.session()) {
-        this.getProfile();
+    this.supabase.authChanges((type, session) => {
+      if (type != 'TOKEN_REFRESHED') {
+        console.log();
+      }
+      this.user.set(this.supabase.user);
+      if (this.user()) {
+        this.getProfile(); // TODO look into ngafterinit so this doesn't constantly get profile
       }
     });
   }
 
   async getProfile() {
     try {
-      let { data: profile, error, status } = await this.supabase.profile(this.session()!.user);
+      let { data: profile, error, status } = await this.supabase.profile(this.user()!);
 
       if (error && status !== 406) {
         throw error;
@@ -69,7 +72,7 @@ export class Landing {
   }
 
   logout() {
-    this.supabase.signOut();
+    // this.supabase.signOut();
     this.router.navigate(['/']);
   }
 }

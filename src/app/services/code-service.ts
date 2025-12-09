@@ -4,14 +4,12 @@ import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
 export class CodeService {
-  session: any;
   constructor(private readonly supabase: SupabaseService) {}
 
   ngOnInit() {}
 
   // Generate all the codes we want to test
-  generateAllCodes(excludeDigits: number[], codeLength: number, vaultName: string, session: any) {
-    this.session = session;
+  generateAllCodes(excludeDigits: number[], codeLength: number, vaultName: string) {
     var startingCode = '';
     // Get initial all 0s code
     for (let i = 0; i < codeLength; i++) {
@@ -114,5 +112,51 @@ export class CodeService {
       // mark all others invalid
       this.supabase.invalidateAllOtherCodes(code);
     }
+  }
+
+  formatCodes(assignedCodes: VaultCode[], formatting: string, grouping: number): string {
+    let lastCode = assignedCodes[0];
+    let currentCode: VaultCode;
+    let copyableCodes = assignedCodes[0].code;
+    // One less than total since we start with one loaded
+    for (let i = 1; i < assignedCodes.length; i++) {
+      currentCode = assignedCodes[i];
+      let numberString = '<br>';
+      if (formatting != 'None') {
+        // Loop over numbers and apply any formatting
+        for (let j = 0; j < currentCode.code.length; j++) {
+          if (lastCode.code.at(j) != currentCode.code.at(j)) {
+            if (formatting == 'Bold') {
+              numberString = numberString + '**' + currentCode.code.at(j) + '**';
+            } else {
+              numberString = numberString + '<u>' + currentCode.code.at(j) + '</u>';
+            }
+          } else {
+            numberString = numberString + currentCode.code.at(j);
+          }
+        }
+      } else {
+        numberString = numberString + currentCode.code;
+      }
+
+      // Extra newline for grouping
+      if (grouping % (i + 1) == 0) {
+        numberString = numberString + '<br>';
+      }
+      copyableCodes = copyableCodes + numberString;
+      lastCode = currentCode;
+    }
+    return copyableCodes;
+  }
+
+  // Convert to discord formatting
+  discordFormat(copyableCodes: string): string {
+    let ulRegexOpen = '<u>';
+    let ulRegexClose = '</u>';
+    let brRegex = '<br>'; // TODO: discord newline not working
+    let discordMd = copyableCodes.replaceAll(ulRegexOpen, '__');
+    discordMd = discordMd.replaceAll(ulRegexClose, '__');
+    discordMd = discordMd.replaceAll(brRegex, '  ');
+    return discordMd;
   }
 }

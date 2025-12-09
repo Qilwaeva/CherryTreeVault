@@ -2,7 +2,7 @@
   <!-- <app-avatar [avatarUrl]="this.avatarUrl" (upload)="updateAvatar($event)"> </app-avatar> -->
   <div>
     <label for="email">Email</label>
-    <input id="email" type="text" [value]="session.user.email" disabled />
+    <input id="email" type="text" [value]="user.email" disabled />
   </div>
   <div>
     <label for="username">Name</label>
@@ -14,12 +14,10 @@
   </div>
 
   <div>
-    <button type="submit" class="button primary block" [disabled]="loading">
-      {{ loading ? "Loading ..." : "Update" }}
-    </button>
+    <button type="submit" class="button primary block" [disabled]="loading">{{ loading ? "Loading ..." : "Update" }}</button>
   </div>
 
   <div>
-    <button class="button block" (click)="signOut()">Sign Out</button>
+    <!-- <button class="button block" (click)="signOut()">Sign Out</button> -->
   </div>
 </form>

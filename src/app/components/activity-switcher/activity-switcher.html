@@ -23,7 +23,7 @@
   </div>
 </div>
 @if (activity() === Activity.CurrentVault) {
-<current-component [session]="session()" [profile]="profile()"></current-component>
+<current-component [user]="user()" [profile]="profile()"></current-component>
 } @else if (activity() === Activity.Historical) {
 <historical-component></historical-component>
 }

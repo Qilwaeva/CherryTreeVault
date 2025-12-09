@@ -1,29 +1,84 @@
-<div class="row flex-center flex">
-  <div class="col-6 form-widget" aria-live="polite">
-    <h1 class="header">Supabase + Angular</h1>
-    <p class="description">Sign in via magic link with your email below</p>
-    <form [formGroup]="signInForm" (ngSubmit)="onSubmit()" class="form-widget">
+<div class="flex-center">
+  <h1 class="header text-center text-xl text-info-content m-4">Welcome to the CherryTree Cracking Assist Tool!</h1>
+  <div class="flex flex-row w-full justify-center mt-6">
+    <form [formGroup]="signUpForm" class="form-widget">
+      <h1 class="header text-center text-xl m-4">Sign up</h1>
       <div>
-        <label for="email">Email</label>
-        <input
-          id="email"
-          formControlName="email"
-          class="inputField"
-          type="email"
-          placeholder="Your email"
-        />
-        <label for="username">Username</label>
-        <input
-          id="username"
-          formControlName="username"
-          class="inputField"
-          type="username"
-          placeholder="Your username"
-        />
+        <div class="flex row py-1">
+          <div class="flex items-center pr-2">
+            <label for="email">Email:</label>
+          </div>
+          <input
+            type="text"
+            id="email"
+            formControlName="email"
+            class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            placeholder="Email Address"
+          />
+        </div>
+        <div class="flex row py-1">
+          <div class="flex items-center pr-2">
+            <label for="username">Username:</label>
+          </div>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            placeholder="User Name"
+          />
+        </div>
+        <div class="flex row py-1">
+          <div class="flex items-center pr-2">
+            <label for="password">Password:</label>
+          </div>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            placeholder="Password"
+          />
+        </div>
       </div>
       <div>
-        <button type="submit" class="button block" [disabled]="loading">
-          {{ loading ? "Loading" : "Send magic link" }}
+        <button class="flex btn mx-auto bg-secondary text-secondary-content" type="submit" (click)="onSubmit()">
+          {{ loading ? "Loading..." : "Submit" }}
+        </button>
+      </div>
+    </form>
+    <div class="divider divider-horizontal"></div>
+    <form [formGroup]="signInForm" class="form-widget">
+      <h1 class="header text-center text-xl m-4">Sign in</h1>
+      <div>
+        <div class="flex row py-1">
+          <div class="flex items-center pr-2">
+            <label for="email">Email:</label>
+          </div>
+          <input
+            type="text"
+            id="email"
+            formControlName="email"
+            class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            placeholder="Email Address"
+          />
+        </div>
+        <div class="flex row py-1">
+          <div class="flex items-center pr-2">
+            <label for="password">Password:</label>
+          </div>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            placeholder="Password"
+          />
+        </div>
+      </div>
+      <div>
+        <button class="flex btn mx-auto bg-secondary text-secondary-content" type="submit" (click)="signIn()">
+          {{ loading ? "Loading..." : "Submit" }}
         </button>
       </div>
     </form>

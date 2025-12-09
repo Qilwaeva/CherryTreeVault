@@ -17,6 +17,7 @@ export interface Profile {
 export class SupabaseService {
   supabase: SupabaseClient;
   _session: AuthSession | null = null;
+  user: User | null = null;
 
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
@@ -27,6 +28,13 @@ export class SupabaseService {
       this._session = data.session;
     });
     return this._session;
+  }
+
+  getUser() {
+    this.supabase.auth.getUser().then(({ data }) => {
+      this.user = data.user;
+    });
+    return this.user;
   }
 
   profile(user: User) {

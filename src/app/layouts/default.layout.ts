@@ -16,8 +16,10 @@ export class LayoutDefault {
   constructor(private readonly supabase: SupabaseService) {}
 
   session: any;
+  user: any;
   ngOnInit() {
     this.session = this.supabase.session;
+    this.user = this.supabase.getUser();
     this.supabase.authChanges((_, session) => (this.session = session));
   }
 }

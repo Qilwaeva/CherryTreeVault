@@ -2,19 +2,31 @@
   <div class="text-base-content text-center">Select worker to manage assigned codes</div>
   <div class="grid grid-cols-8 gap-10 p-10">
     <div *ngFor="let worker of currentWorkers">
-      <div class="flex border border-base-content rounded-md items-center justify-center cursor-pointer">
+      <div class="flex border border-base-content rounded-md items-center justify-center cursor-pointer" (click)="selectWorker(worker)">
         <div class="m-2">{{worker.username}}</div>
       </div>
     </div>
   </div>
 </div>
 
-<dialog #manageWorkerCodes>
+<dialog #manageWorkerCodes class="modal">
   <div class="flex row">
     <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm">Copy Again</button>
     <button class="flex btn btn-xs bg-error text-error-content border-error-content m-1 text-sm">Mark All Invalid</button>
     <button class="flex btn btn-xs bg-error text-error-content border-error-content m-1 text-sm">Mark Some Invalid</button>
     <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm">Unassign</button>
     <button class="flex btn btn-xs bg-success text-success-content border-success-content m-1 text-sm">Mark One Valid</button>
+  </div>
+
+  @if (copyableCodes.length > 0) {
+  <div class="flex justify-center py-3">
+    <div class="flex border border-base-content rounded-md">
+      <div markdown ngPreserveWhitespaces>{{copyableCodes}}</div>
+    </div>
+  </div>
+
+  }
+  <div class="modal-action flex">
+    <!-- buttons to close modal -->
   </div>
 </dialog>

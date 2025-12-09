@@ -2,7 +2,7 @@ import { Component, input, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Profile, SupabaseService } from '../../services/supabase.service';
 import { CommonModule } from '@angular/common';
-import { AuthSession } from '@supabase/supabase-js';
+import { AuthSession, User } from '@supabase/supabase-js';
 import { CodeForm } from '../../../models/code-form';
 import { CodeService } from '../../services/code-service';
 import { VaultCode } from '../../../models/vault-code';
@@ -18,7 +18,7 @@ import { VaultForm } from '../../../models/vault-form';
   standalone: true,
 })
 export class CurrentComponent {
-  session = input.required<AuthSession | null>();
+  user = input.required<User | null>();
   profile = input.required<Profile | null>();
   vaultActive: boolean = false;
   formatKeys = ['None', 'Underlined', 'Bold'];
@@ -107,80 +107,13 @@ export class CurrentComponent {
     this.codeService.assignCodes(this.requestForm.worker, this.requestForm.totalCodes).then((res) => {
       this.assignedCodes = res;
       if (this.requestForm.totalCodes > this.requestForm.grouping) {
-        this.formatOutput();
+        this.copyableCodes = this.codeService.formatCodes(this.assignedCodes, this.requestForm.formatting, this.requestForm.grouping);
       }
     });
   }
 
-  formatOutput() {
-    // this.assignedCodes = [
-    //   {
-    //     code: '1234',
-    //     status: 'not-started',
-    //     assignee: null,
-    //     vaultName: '',
-    //     validateOne: null,
-    //     validateTwo: null,
-    //   },
-    //   {
-    //     code: '1235',
-    //     status: 'not-started',
-    //     assignee: null,
-    //     vaultName: '',
-    //     validateOne: null,
-    //     validateTwo: null,
-    //   },
-    //   {
-    //     code: '1245',
-    //     status: 'not-started',
-    //     assignee: null,
-    //     vaultName: '',
-    //     validateOne: null,
-    //     validateTwo: null,
-    //   },
-    // ];
-    let lastCode = this.assignedCodes[0];
-    let currentCode: VaultCode;
-    this.copyableCodes = this.assignedCodes[0].code;
-    // One less than total since we start with one loaded
-    for (let i = 1; i < this.assignedCodes.length; i++) {
-      currentCode = this.assignedCodes[i];
-      let numberString = '<br>';
-      if (this.requestForm.formatting != 'None') {
-        // Loop over numbers and apply any formatting
-        for (let j = 0; j < currentCode.code.length; j++) {
-          if (lastCode.code.at(j) != currentCode.code.at(j)) {
-            if (this.requestForm.formatting == 'Bold') {
-              numberString = numberString + '**' + currentCode.code.at(j) + '**';
-            } else {
-              numberString = numberString + '<u>' + currentCode.code.at(j) + '</u>';
-            }
-          } else {
-            numberString = numberString + currentCode.code.at(j);
-          }
-        }
-      } else {
-        numberString = numberString + currentCode.code;
-      }
-
-      // Extra newline for grouping
-      if (this.requestForm.grouping % (i + 1) == 0) {
-        numberString = numberString + '<br>';
-      }
-      this.copyableCodes = this.copyableCodes + numberString;
-      lastCode = currentCode;
-    }
-  }
-
-  // Convert to discord formatting
-  discordFormat(): string {
-    let ulRegexOpen = '<u>';
-    let ulRegexClose = '</u>';
-    let brRegex = '<br>'; // TODO: discord newline not working
-    let discordMd = this.copyableCodes.replaceAll(ulRegexOpen, '__');
-    discordMd = discordMd.replaceAll(ulRegexClose, '__');
-    discordMd = discordMd.replaceAll(brRegex, '  ');
-    return discordMd;
+  discordFormat() {
+    return this.codeService.discordFormat(this.copyableCodes);
   }
 
   generateVault() {
