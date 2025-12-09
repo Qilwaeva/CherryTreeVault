@@ -55,7 +55,7 @@ export class SupabaseService {
     return this.supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: window.location.origin,
+        // emailRedirectTo: window.location.origin,
         data: {
           username: profile.username,
           admin: profile.admin,
@@ -70,7 +70,7 @@ export class SupabaseService {
       email,
       password,
       options: {
-        emailRedirectTo: window.location.origin,
+        // emailRedirectTo: window.location.origin,
         data: {
           username: profile.username,
           admin: profile.admin,

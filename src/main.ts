@@ -1,3 +1,4 @@
+// import '@angular/compiler';
 import { Component, enableProdMode, importProvidersFrom, OnInit } from '@angular/core';
 import { getConfig } from './config/config';
 import { bootstrapApplication } from '@angular/platform-browser';
