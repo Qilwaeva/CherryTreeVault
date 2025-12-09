@@ -46,7 +46,6 @@ export class CodeService {
 
     let codeWait = await this.supabase.insertCodes(validCodes);
     let vaultConfirm = await this.supabase.createNewVault(vaultName);
-    console.log('pause');
     // this.supabase.getCodes().then((data) => {
     // TODO remove testing code
     // this.updateCodeAssignee(data.data!, 'testUser1');
