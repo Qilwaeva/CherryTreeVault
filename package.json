@@ -9,7 +9,7 @@
     "test": "ng test",
     "format": "prettier src/ --write --cache",
     "generate-types": "wrangler types",
-		"deploy": "wrangler deploy"
+		"deploy": "wrangler deploy pages"
   },
   "private": true,
   "dependencies": {
