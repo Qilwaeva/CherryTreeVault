@@ -2,7 +2,5 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "cherry-tree-vault",
   "pages_build_output_dir": "./dist",
-  "main": "src/main.ts",
-  "compatibility_date": "2022-07-12",
-  "workers_dev": false
+  "compatibility_date": "2022-07-12"
 }
