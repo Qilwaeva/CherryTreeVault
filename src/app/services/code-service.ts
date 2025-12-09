@@ -95,14 +95,14 @@ export class CodeService {
 
   // For the first admin validation, just mark them down
   // For the second validation, mark valid and everything else invalid
-  markCodeValidated(code: VaultCode, admin: string) {
+  markCodeValidated(code: VaultCode, vaultMgr: string) {
     if (code.validateOne == null) {
-      code.validateOne = admin;
+      code.validateOne = vaultMgr;
       this.supabase.validateCode(code).then((res) => {
         console.log('pause');
       });
-    } else if (code.validateTwo == null && code.validateOne != admin) {
-      code.validateTwo = admin;
+    } else if (code.validateTwo == null && code.validateOne != vaultMgr) {
+      code.validateTwo = vaultMgr;
       code.status = 'valid';
       this.supabase.validateCode(code).then((res) => {
         console.log('pause');

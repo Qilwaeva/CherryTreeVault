@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthChangeEvent, AuthSession, createClient, Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 import { VaultCode } from '../../models/vault-code';
+import { CurrencyPipe } from '@angular/common';
 
 export interface Profile {
   id?: string;
@@ -217,6 +218,7 @@ export class SupabaseService {
       .eq('vaultName', code.vaultName)
       .neq('code', code.code);
     // let data = await this.supabase.from('VaultCode').select('*').eq('vaultName', code.vaultName).neq('code', code.code);
+    await this.closeVault();
     return data;
   }
 
@@ -237,9 +239,35 @@ export class SupabaseService {
     return data.data;
   }
 
+  async closeVault() {
+    let currVault = await this.supabase.from('Settings').select('*').eq('setting_name', 'active_vault').single();
+    let ageConf = await this.supabase
+      .from('Settings')
+      .update([
+        {
+          setting_value: currVault.data.setting_value,
+        },
+      ])
+      .eq('setting_name', 'last_vault');
+    let remActive = await this.supabase
+      .from('Settings')
+      .update([
+        {
+          setting_value: null,
+        },
+      ])
+      .eq('setting_name', 'active_vault');
+    return remActive;
+  }
+
   // Find the next X codes in the given vault
   async queryNextCodes(number: number, vaultName: string) {
     let data = await this.supabase.from('VaultCode').select('*').eq('vaultName', vaultName).eq('status', 'not-started').limit(number);
+    return data.data;
+  }
+
+  async getCodebyCode(code: string, vaultName: string) {
+    let data = await this.supabase.from('VaultCode').select('*').eq('code', code).eq('vaultName', vaultName).single();
     return data.data;
   }
 }

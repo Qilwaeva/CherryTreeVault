@@ -97,6 +97,10 @@ export class CurrentComponent {
   }
 
   validateValues() {
+    if (this.requestForm.worker.length < 1) {
+      this.validationError = 'Worker name must be at least 1 character';
+      this.submitValid = false;
+    }
     if (this.requestForm.totalCodes < 1 || this.requestForm.totalCodes > 80) {
       this.validationError = 'Please enter a number of codes between 1 and 80\r\n';
       this.submitValid = false;
