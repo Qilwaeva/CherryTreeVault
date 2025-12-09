@@ -42,7 +42,7 @@ export class CurrentComponent {
   validationError = '';
   submitValid = true;
   assignedCodes: VaultCode[] = [];
-  copyableCodes = '';
+  copyableCodes = signal<string>('');
 
   ngOnInit() {
     this.checkActiveVault();
@@ -116,13 +116,13 @@ export class CurrentComponent {
     this.codeService.assignCodes(this.requestForm.worker, this.requestForm.totalCodes).then((res) => {
       this.assignedCodes = res;
       if (this.requestForm.totalCodes > this.requestForm.grouping) {
-        this.copyableCodes = this.codeService.formatCodes(this.assignedCodes, this.requestForm.formatting, this.requestForm.grouping);
+        this.copyableCodes.set(this.codeService.formatCodes(this.assignedCodes, this.requestForm.formatting, this.requestForm.grouping));
       }
     });
   }
 
   discordFormat() {
-    return this.codeService.discordFormat(this.copyableCodes);
+    navigator.clipboard.writeText(this.codeService.discordFormat(this.copyableCodes()));
   }
 
   async generateVault() {

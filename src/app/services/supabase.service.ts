@@ -121,8 +121,8 @@ export class SupabaseService {
     // }
   }
 
-  async getCodes() {
-    let data = await this.supabase.from('VaultCode').select('*');
+  async getAllCodes() {
+    let data = await this.supabase.from('VaultCode').select('*').order('code', { ascending: true });
     return data;
   }
 
@@ -187,7 +187,12 @@ export class SupabaseService {
   }
 
   async getCodesByWorker(username: string) {
-    let data = await this.supabase.from('VaultCode').select('*').eq('assignee', username).eq('status', 'in-progress');
+    let data = await this.supabase
+      .from('VaultCode')
+      .select('*')
+      .eq('assignee', username)
+      .eq('status', 'in-progress')
+      .order('code', { ascending: true });
     return data.data;
   }
 
@@ -213,6 +218,7 @@ export class SupabaseService {
       .update([
         {
           status: 'invalid',
+          assignee: null,
         },
       ])
       .eq('vaultName', code.vaultName)
@@ -262,7 +268,13 @@ export class SupabaseService {
 
   // Find the next X codes in the given vault
   async queryNextCodes(number: number, vaultName: string) {
-    let data = await this.supabase.from('VaultCode').select('*').eq('vaultName', vaultName).eq('status', 'not-started').limit(number);
+    let data = await this.supabase
+      .from('VaultCode')
+      .select('*')
+      .eq('vaultName', vaultName)
+      .eq('status', 'not-started')
+      .order('code', { ascending: true })
+      .limit(number);
     return data.data;
   }
 

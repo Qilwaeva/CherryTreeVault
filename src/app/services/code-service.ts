@@ -95,27 +95,38 @@ export class CodeService {
 
   // For the first admin validation, just mark them down
   // For the second validation, mark valid and everything else invalid
-  markCodeValidated(code: VaultCode, vaultMgr: string) {
+  async markCodeValidated(code: VaultCode, vaultMgr: string) {
+    let validateFeedback = '';
     if (code.validateOne == null) {
       code.validateOne = vaultMgr;
-      this.supabase.validateCode(code).then((res) => {
-        console.log('pause');
+      await this.supabase.validateCode(code).then((res) => {
+        validateFeedback = 'Validation successful. Once another manager validates, the vault will close';
       });
     } else if (code.validateTwo == null && code.validateOne != vaultMgr) {
       code.validateTwo = vaultMgr;
       code.status = 'valid';
-      this.supabase.validateCode(code).then((res) => {
-        console.log('pause');
+      await this.supabase.validateCode(code).then((res) => {
+        validateFeedback = 'Validation successful. Once another manager validates, the vault will close';
       });
       // mark all others invalid
       this.supabase.invalidateAllOtherCodes(code);
+    } else {
+      validateFeedback = 'You have either already validated this code, or someone beat you to the second validation';
     }
+    return validateFeedback;
   }
 
+  // Add formatting and spaces between letters to satisfy discord
   formatCodes(assignedCodes: VaultCode[], formatting: string, grouping: number): string {
     let lastCode = assignedCodes[0];
     let currentCode: VaultCode;
-    let copyableCodes = assignedCodes[0].code;
+    let copyableCodes = '';
+
+    if (formatting != 'None') {
+      for (let j = 0; j < assignedCodes[0].code.length; j++) {
+        copyableCodes = copyableCodes + assignedCodes[0].code.at(j) + ' ';
+      }
+    }
     // One less than total since we start with one loaded
     for (let i = 1; i < assignedCodes.length; i++) {
       currentCode = assignedCodes[i];
@@ -125,16 +136,16 @@ export class CodeService {
         for (let j = 0; j < currentCode.code.length; j++) {
           if (lastCode.code.at(j) != currentCode.code.at(j)) {
             if (formatting == 'Bold') {
-              numberString = numberString + '**' + currentCode.code.at(j) + '**';
+              numberString = numberString + '**' + currentCode.code.at(j) + '** ';
             } else {
-              numberString = numberString + '<u>' + currentCode.code.at(j) + '</u>';
+              numberString = numberString + '<u>' + currentCode.code.at(j) + '</u> ';
             }
           } else {
-            numberString = numberString + currentCode.code.at(j);
+            numberString = numberString + currentCode.code.at(j) + ' ';
           }
         }
       } else {
-        numberString = numberString + currentCode.code;
+        numberString = numberString + currentCode.code + ' ';
       }
 
       if (grouping != 0) {

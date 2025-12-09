@@ -13,6 +13,8 @@
     </button>
     @if (validateError().length > 0) {
     <div class="text-error text-center">Validation Error: {{validateError()}}</div>
+    } @if (validateFeedback().length > 0) {
+    <div class="text-base-content text-center">{{validateFeedback()}}</div>
     }
   </div>
   <div class="divider divider-vertical"></div>
@@ -39,15 +41,9 @@
     There will be unassign and mark some as invalid options in MVP +1 @if (copyableCodes().length > 0) {
     <div class="grid grid-cols-2">
       <div class="flex justify-center py-3 col-span-1">
-        <!-- @if (copyableCodes.length > 0) { -->
         <div class="flex border border-base-content rounded-md py-2 px-4">
-          <div markdown ngPreserveWhitespaces>{{copyableCodes()}}</div>
+          <div [innerHTML]="copyableCodes()"></div>
         </div>
-        <!-- } @else {
-        <div class="border border-base-content rounded-md py-2 px-4">
-          <div *ngFor="let code of workerTasks()">{{code.code}}<br /></div>
-        </div>
-        } -->
       </div>
       <div class="col-span-1 col-start-2">
         <form [formGroup]="formatCodesForm" class="form-widget">
