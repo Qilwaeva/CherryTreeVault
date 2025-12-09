@@ -19,9 +19,12 @@ import { WorkerTask } from '../../../../models/worker-task';
 export class ManageCodes {
   user = input.required<User | null>();
   currentWorkers: Worker[] = [];
-  workerTasks?: WorkerTask;
+  workerTasks = signal<VaultCode[]>([]);
   tasksLoading = false;
   copyableCodes = '';
+  formatKeys = ['None', 'Underlined', 'Bold'];
+  formatting = '';
+  formatCodesForm!: FormGroup;
 
   manageWorkerCodesModal = viewChild.required<ElementRef<HTMLDialogElement>>('manageWorkerCodes');
   selectedWorker?: Worker;
@@ -34,6 +37,13 @@ export class ManageCodes {
 
   ngOnInit() {
     this.getActiveWorkers();
+
+    this.formatCodesForm = this.formBuilder.group({
+      username: '',
+      quantity: 0,
+      grouping: 0,
+      formatting: 'None',
+    });
   }
 
   getActiveWorkers() {
@@ -56,7 +66,8 @@ export class ManageCodes {
       .getCodesByWorker(worker.username)
       .then((codeRes) => {
         if (codeRes != null && codeRes.length > 0) {
-          this.workerTasks = { worker: worker, codes: codeRes };
+          this.workerTasks.set(codeRes);
+          // this.formatCodes();
           console.log();
         }
       })
@@ -65,9 +76,13 @@ export class ManageCodes {
       });
   }
 
+  changeFormatting(event: any) {
+    this.formatting = event.target.value;
+  }
+
   formatCodes() {
     let formatting = ''; // TODO add buttons to decide formatting on re-copy
-    let grouping = 0;
-    this.codeService.formatCodes(this.workerTasks!.codes, formatting, grouping);
+    let grouping = this.formatCodesForm.value.grouping as number;
+    this.copyableCodes = this.codeService.formatCodes(this.workerTasks()!, this.formatting, grouping);
   }
 }

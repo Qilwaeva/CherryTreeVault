@@ -10,23 +10,63 @@
 </div>
 
 <dialog #manageWorkerCodes class="modal">
-  <div class="flex row">
-    <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm">Copy Again</button>
-    <button class="flex btn btn-xs bg-error text-error-content border-error-content m-1 text-sm">Mark All Invalid</button>
-    <button class="flex btn btn-xs bg-error text-error-content border-error-content m-1 text-sm">Mark Some Invalid</button>
-    <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm">Unassign</button>
-    <button class="flex btn btn-xs bg-success text-success-content border-success-content m-1 text-sm">Mark One Valid</button>
-  </div>
-
-  @if (copyableCodes.length > 0) {
-  <div class="flex justify-center py-3">
-    <div class="flex border border-base-content rounded-md">
-      <div markdown ngPreserveWhitespaces>{{copyableCodes}}</div>
+  <div class="modal-box max-w-screen-md contain-style flex flex-col">
+    <div class="collapse-title font-semibold text-center text-info-content">Manage Codes for {{selectedWorker?.username}}</div>
+    <div class="flex row">
+      <button class="flex btn btn-md bg-error text-error-content border-error-content m-1 text-sm">Mark All Invalid</button>
+      <!-- <button class="flex btn btn-xs bg-error text-error-content border-error-content m-1 text-sm">Mark Some Invalid</button> -->
+      <!-- <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm">Unassign</button> -->
     </div>
-  </div>
+    There will be unassign and mark some as invalid options in MVP +1 @if (workerTasks().length) {
+    <div class="grid grid-cols-2">
+      <div class="flex justify-center py-3 col-span-1">
+        @if (copyableCodes.length > 0) {
+        <div class="flex border border-base-content rounded-md">
+          <div markdown ngPreserveWhitespaces>{{copyableCodes}}</div>
+        </div>
+        } @else {
+        <div class="border border-base-content rounded-md py-2 px-4">
+          <div *ngFor="let code of workerTasks()">{{code.code}}<br /></div>
+        </div>
+        }
+      </div>
+      <div class="col-span-1 col-start-2">
+        <form [formGroup]="formatCodesForm" class="form-widget">
+          <div class="flex row py-1">
+            <div class="flex items-center pr-2">
+              <label for="grouping">Group By #:</label>
+            </div>
+            <input
+              type="number"
+              id="grouping"
+              formControlName="grouping"
+              class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            />
+          </div>
+          <div class="flex row py-1">
+            <div class="flex items-center pr-2">
+              <label for="formatting">Formatting:</label>
+            </div>
+            <select
+              id="formatting"
+              formControlName="formatting"
+              class="select select-bordered border-base-content bg-base-200 text-base-content w-48 ml-auto"
+              (change)="changeFormatting($event)"
+            >
+              <option *ngFor="let option of formatKeys">{{option}}</option>
+            </select>
+          </div>
+          <button class="flex btn btn-md bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="formatCodes()">
+            Copy Again
+          </button>
+        </form>
+      </div>
+    </div>
 
-  }
-  <div class="modal-action flex">
-    <!-- buttons to close modal -->
+    }
+    <div class="modal-action flex">
+      <!-- buttons to close modal -->
+      <button class="btn">Close</button>
+    </div>
   </div>
 </dialog>

@@ -28,11 +28,11 @@ export class Landing {
   ngOnInit() {
     this.supabase.authChanges((type, session) => {
       if (type != 'TOKEN_REFRESHED') {
-        console.log();
-      }
-      this.user.set(this.supabase.user);
-      if (this.user()) {
-        this.getProfile(); // TODO look into ngafterinit so this doesn't constantly get profile
+        // don't need to go get the whole user again if only refreshing
+        this.user.set(this.supabase.user);
+        if (this.user()) {
+          this.getProfile();
+        }
       }
     });
   }
