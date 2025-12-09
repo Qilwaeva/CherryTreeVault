@@ -80,6 +80,7 @@ export class ManageCodes {
   }
 
   validateCode() {
+    // TODO make sure the code entered actually is a code
     let code = this.validateCodeForm.value.code as string;
     let vaultName = '';
     this.supabase.getSetting('active_vault').then((res) => {
