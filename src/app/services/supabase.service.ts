@@ -20,12 +20,14 @@ export class SupabaseService {
   supabase: SupabaseClient;
   _session: AuthSession | null = null;
   user: User | null = null;
-  vaultCodeTable = getConfig().code_table_name;
+  vaultCodeTable = '';
   settingsTable = getConfig().settings_table_name;
   workersTable = getConfig().workers_table_name;
 
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+    // this.vaultCodeTable = process.env['CODE_TABLE_NAME'] || '';
+    console.log();
   }
 
   get session() {
