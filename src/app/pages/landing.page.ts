@@ -58,21 +58,10 @@ export class Landing {
     this.supabase.getCurrentWorkers().then((res) => {
       console.log();
     });
-    // this.codeService.generateAllCodes([1, 2, 3, 4, 5, 6], 2, 'December1 2025', this.session());
-    // let code: VaultCode = {
-    //   code: '00000707',
-    //   status: 'in-progress',
-    //   assignee: null,
-    //   vaultName: 'December 2025',
-    //   validateOne: null,
-    //   validateTwo: null,
-    // };
-    // this.codeService.markCodeValidated(code, 'name');
-    // this.codeService.markCodeValidated(code, 'name2');
   }
 
   logout() {
-    // this.supabase.signOut();
+    this.supabase.signOut();
     this.router.navigate(['/']);
   }
 }

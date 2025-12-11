@@ -1,3 +1,13 @@
+@if(vaultActive()) {
+<div class="w-full">
+  <div class="text-center">
+    <div>Tested Codes: {{testedCodes()}}</div>
+    <div>Assigned Codes: {{totalAssignedCodes()}}</div>
+    <div>Remaining Codes: {{remainingCodes()}}</div>
+    <div>Total Codes: {{totalCodes()}}</div>
+  </div>
+</div>
+}
 <div class="flex w-full justify-center">
   @if(profile() != null && profile()?.vault_manager){ @if(vaultActive()) {
   <div class="w-full py-2 px-6">

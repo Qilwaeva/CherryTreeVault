@@ -246,6 +246,27 @@ export class SupabaseService {
     return data.data;
   }
 
+  // Get vault total codes, codes tested, and codes waiting
+  async getVaultStats(vaultName: string): Promise<any> {
+    let dataTotal = await this.supabase.from('VaultCode').select('*', { count: 'exact', head: true }).eq('vaultName', vaultName);
+    let dataInvalid = await this.supabase
+      .from('VaultCode')
+      .select('*', { count: 'exact', head: true })
+      .eq('vaultName', vaultName)
+      .eq('status', 'invalid');
+    let dataAssigned = await this.supabase
+      .from('VaultCode')
+      .select('*', { count: 'exact', head: true })
+      .eq('vaultName', vaultName)
+      .eq('status', 'in-progress');
+    let dataRemaining = await this.supabase
+      .from('VaultCode')
+      .select('*', { count: 'exact', head: true })
+      .eq('vaultName', vaultName)
+      .eq('status', 'not-started');
+    return { total: dataTotal.count, invalid: dataInvalid.count, assigned: dataAssigned.count, remaining: dataRemaining.count };
+  }
+
   async closeVault() {
     let currVault = await this.supabase.from('Settings').select('*').eq('setting_name', 'active_vault').single();
     let ageConf = await this.supabase
