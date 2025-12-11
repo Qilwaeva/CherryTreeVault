@@ -45,11 +45,6 @@ export class CodeService {
 
     let codeWait = await this.supabase.insertCodes(validCodes);
     let vaultConfirm = await this.supabase.createNewVault(vaultName);
-    // this.supabase.getCodes().then((data) => {
-    // TODO remove testing code
-    // this.updateCodeAssignee(data.data!, 'testUser1');
-    // this.updateCodeStatus(data.data!, 'in-progress');
-    // });
   }
 
   // Don't want to lose leading zeroes when converting

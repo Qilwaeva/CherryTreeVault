@@ -1,4 +1,4 @@
-<div class="items-center pr-8">
+<div class="items-center sm:pr-8">
   <div class="">
     <form [formGroup]="validateCodeForm" class="form-widget">
       <div class="flex row py-1 justify-center">
@@ -19,7 +19,7 @@
   </div>
   <div class="divider divider-vertical"></div>
   <div class="text-base-content text-center">Select worker to manage assigned codes</div>
-  <div class="grid grid-cols-8 gap-10 p-10">
+  <div class="grid grid-cols-1 sm:grid-cols-8 gap-10 p-1 sm:p-10">
     <div *ngFor="let worker of currentWorkers()">
       <div class="flex border border-base-content rounded-md items-center justify-center cursor-pointer" (click)="selectWorker(worker)">
         <div class="m-2">{{worker.username}}</div>

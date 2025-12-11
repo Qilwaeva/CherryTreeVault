@@ -25,6 +25,11 @@ export class CurrentComponent {
   formatKeys = ['None', 'Underlined', 'Bold'];
   refresh = signal<boolean>(false);
 
+  totalCodes = signal<number>(0);
+  testedCodes = signal<number>(0);
+  totalAssignedCodes = signal<number>(0);
+  remainingCodes = signal<number>(0);
+
   assignCodesForm!: FormGroup;
   vaultForm!: FormGroup;
   constructor(
@@ -69,6 +74,12 @@ export class CurrentComponent {
         this.vaultActive.set(false);
       } else {
         this.vaultActive.set(true);
+        this.supabase.getVaultStats(res).then((stats) => {
+          this.totalCodes.set(stats.total);
+          this.testedCodes.set(stats.invalid);
+          this.totalAssignedCodes.set(stats.assigned);
+          this.remainingCodes.set(stats.remaining);
+        });
       }
     });
   }
@@ -83,7 +94,7 @@ export class CurrentComponent {
       this.requestForm.worker = this.assignCodesForm.value.username as string;
       this.requestForm.totalCodes = this.assignCodesForm.value.quantity as number;
       this.requestForm.grouping = this.assignCodesForm.value.grouping as number;
-      this.validateValues();
+      await this.validateValues();
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -98,10 +109,17 @@ export class CurrentComponent {
     }
   }
 
-  validateValues() {
+  async validateValues() {
     if (this.requestForm.worker.length < 1) {
       this.validationError = 'Worker name must be at least 1 character';
       this.submitValid = false;
+    } else {
+      await this.supabase.getCodesByWorker(this.requestForm.worker).then((codes) => {
+        if (codes != null && codes.length > 0) {
+          this.validationError = 'This worker already has codes assigned';
+          this.submitValid = false;
+        }
+      });
     }
     if (this.requestForm.totalCodes < 1 || this.requestForm.totalCodes > 80) {
       this.validationError = 'Please enter a number of codes between 1 and 80\r\n';
