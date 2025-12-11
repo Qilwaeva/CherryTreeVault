@@ -4,7 +4,7 @@
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2022-07-12",
   "env": {
-    "local": {
+    "preview": {
       "vars": {
         "CODE_TABLE_NAME": "VaultCodeTest",
         "SETTING_TABLE_NAME": "SettingsTest",
