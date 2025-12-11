@@ -2,5 +2,21 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "cherry-tree-vault",
   "pages_build_output_dir": "./dist",
-  "compatibility_date": "2022-07-12"
+  "compatibility_date": "2022-07-12",
+  "env": {
+    "local": {
+      "vars": {
+        "CODE_TABLE_NAME": "VaultCodeTest",
+        "SETTING_TABLE_NAME": "SettingsTest",
+        "WORKERS_TABLE_NAME": "workersTest"
+      }
+    },
+    "production": {
+      "vars": {
+        "CODE_TABLE_NAME": "VaultCode",
+        "SETTING_TABLE_NAME": "Settings",
+        "WORKERS_TABLE_NAME": "workers"
+      }
+    }
+  }
 }
