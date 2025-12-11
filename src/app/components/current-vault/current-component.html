@@ -1,5 +1,5 @@
 <div class="flex w-full justify-center">
-  @if(profile()?.vault_manager){ @if(vaultActive()) {
+  @if(profile() != null && profile()?.vault_manager){ @if(vaultActive()) {
   <div class="w-full py-2 px-6">
     <div class="collapse collapse-plus bg-base-100 border-2 border-base-300">
       <input type="radio" name="my-accordion-3" checked="checked" />
@@ -55,17 +55,17 @@
                   <option *ngFor="let option of formatKeys">{{option}}</option>
                 </select>
               </div>
-              <button class="flex btn mx-auto bg-secondary text-secondary-content" type="submit" (click)="onSubmit()">
+              <button class="flex btn mx-auto bg-secondary text-secondary-content" type="submit" (click)="onSubmitRequest()">
                 {{ submitLoading ? "Loading..." : "Submit" }}
               </button>
               @if (!submitValid) {
               <div class="text-error">Validation Error: {{validationError}}</div>
-              } @if (copyableCodes.length > 0) {
+              } @if (copyableCodes().length > 0) {
               <div class="flex justify-center py-3">
                 <div class="flex border border-base-content rounded-md">
-                  <div markdown ngPreserveWhitespaces>{{copyableCodes()}}</div>
+                  <div [innerHTML]="copyableCodes()"></div>
 
-                  <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm" (click)="discordFormat()">
+                  <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-2 text-sm" (click)="discordFormat()">
                     Copy
                   </button>
                 </div>
@@ -81,7 +81,14 @@
       <input type="radio" name="my-accordion-3" checked="checked" />
       <div class="collapse-title font-semibold text-center text-info-content">Manage Existing Codes</div>
       <div class="collapse-content text-sm">
-        <manage-codes class="" [user]="user()" [profile]="profile()"></manage-codes>
+        <manage-codes
+          class=""
+          [user]="user()"
+          [profile]="profile()"
+          [refresh]="refresh()"
+          (checkActive)="checkActiveVault()"
+          (refreshOutput)="this.refresh.set($event)"
+        ></manage-codes>
       </div>
     </div>
   </div>
