@@ -127,7 +127,7 @@ export class SupabaseService {
   }
 
   async setAssignee(codes: VaultCode[], assignee: string) {
-    await this.supabase
+    let data = await this.supabase
       .from('VaultCode')
       .update([
         {
@@ -139,10 +139,11 @@ export class SupabaseService {
         'code',
         codes.map((c) => c.code)
       );
+    return data;
   }
 
   async setStatus(codes: VaultCode[], status: 'valid' | 'invalid' | 'in-progress') {
-    await this.supabase
+    let data = await this.supabase
       .from('VaultCode')
       .update([
         {
@@ -154,6 +155,7 @@ export class SupabaseService {
         'code',
         codes.map((c) => c.code)
       );
+    return data;
   }
 
   // Get worker, or create one if one doesn't exist
@@ -218,7 +220,6 @@ export class SupabaseService {
       .update([
         {
           status: 'invalid',
-          assignee: null,
         },
       ])
       .eq('vaultName', code.vaultName)

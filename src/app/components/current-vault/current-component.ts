@@ -20,8 +20,10 @@ import { VaultForm } from '../../../models/vault-form';
 export class CurrentComponent {
   user = input.required<User | null>();
   profile = input.required<Profile | null>();
+
   vaultActive = signal<boolean>(false);
   formatKeys = ['None', 'Underlined', 'Bold'];
+  refresh = signal<boolean>(false);
 
   assignCodesForm!: FormGroup;
   vaultForm!: FormGroup;
@@ -60,7 +62,6 @@ export class CurrentComponent {
     // this.vaultActive = true;
   }
 
-  // TODO send emit back to this to check the vault again so it can be remade
   checkActiveVault() {
     // See if there's a vault currently active
     this.supabase.getSetting('active_vault').then((res) => {
@@ -76,7 +77,7 @@ export class CurrentComponent {
     this.requestForm.formatting = event.target.value;
   }
 
-  async onSubmit(): Promise<void> {
+  async onSubmitRequest(): Promise<void> {
     try {
       this.submitLoading = true;
       this.requestForm.worker = this.assignCodesForm.value.username as string;
@@ -117,6 +118,7 @@ export class CurrentComponent {
       this.assignedCodes = res;
       if (this.requestForm.totalCodes > this.requestForm.grouping) {
         this.copyableCodes.set(this.codeService.formatCodes(this.assignedCodes, this.requestForm.formatting, this.requestForm.grouping));
+        this.refresh.set(true);
       }
     });
   }

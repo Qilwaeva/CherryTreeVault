@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, input, signal, viewChild, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, ElementRef, input, linkedSignal, output, signal, viewChild, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
@@ -18,7 +18,13 @@ import { WorkerTask } from '../../../../models/worker-task';
 export class ManageCodes {
   user = input.required<User | null>();
   profile = input.required<Profile | null>();
-  currentWorkers: Worker[] = [];
+  refresh = input.required<boolean>();
+  _refresh = linkedSignal(() => this.refresh());
+  refreshOutput = output<boolean>();
+  checkActive = output();
+
+  currentWorkers = signal<Worker[]>([]);
+  selectedWorker?: Worker;
   workerTasks = signal<VaultCode[]>([]);
   tasksLoading = false;
   copyableCodes = signal<string>('');
@@ -30,13 +36,18 @@ export class ManageCodes {
   validateFeedback = signal<string>('');
 
   manageWorkerCodesModal = viewChild.required<ElementRef<HTMLDialogElement>>('manageWorkerCodes');
-  selectedWorker?: Worker;
 
   constructor(
     private readonly codeService: CodeService,
     private readonly supabase: SupabaseService,
     private readonly formBuilder: FormBuilder
-  ) {}
+  ) {
+    effect(() => {
+      if (this.refresh()) {
+        this.getActiveWorkers();
+      }
+    });
+  }
 
   ngOnInit() {
     this.getActiveWorkers();
@@ -53,7 +64,9 @@ export class ManageCodes {
   getActiveWorkers() {
     this.supabase.getCurrentWorkers().then((res) => {
       if (res.data != null && res.data.length > 0) {
-        this.currentWorkers = res.data;
+        this.currentWorkers.set(res.data);
+        this._refresh.set(false);
+        this.refreshOutput.emit(this._refresh());
       }
     });
   }
@@ -103,6 +116,7 @@ export class ManageCodes {
 
                 this.codeService.markCodeValidated(vCode, this.profile()!.username).then((res) => {
                   this.validateFeedback.set(res);
+                  this.checkActive.emit();
                 });
               }
             });
@@ -133,5 +147,6 @@ export class ManageCodes {
     this.codeService.updateCodeStatus(this.workerTasks(), 'invalid');
     this.workerTasks.set([]);
     this.manageWorkerCodesModal().nativeElement.close();
+    this.getActiveWorkers();
   }
 }

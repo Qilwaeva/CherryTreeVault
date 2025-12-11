@@ -71,24 +71,26 @@ export class CodeService {
     let codesRes = await this.supabase.queryNextCodes(numberOfCodes, activeVault);
     if (codesRes && codesRes?.length > 0) {
       newCodes = codesRes;
-      this.updateCodeAssignee(newCodes, assignee);
-      this.updateCodeStatus(newCodes, 'in-progress');
+      await this.updateCodeAssignee(newCodes, assignee).then(async () => {
+        await this.updateCodeStatus(newCodes, 'in-progress').then(() => {});
+      });
     }
     return newCodes;
   }
 
-  updateCodeStatus(codes: VaultCode[], status: 'valid' | 'invalid' | 'in-progress') {
-    this.supabase.setStatus(codes, status).then(() => {});
+  async updateCodeStatus(codes: VaultCode[], status: 'valid' | 'invalid' | 'in-progress') {
+    let data = await this.supabase.setStatus(codes, status);
+    return data;
   }
 
-  updateCodeAssignee(codes: VaultCode[], assignee: string) {
-    this.supabase.getWorker(assignee).then((res) => {
+  async updateCodeAssignee(codes: VaultCode[], assignee: string) {
+    this.supabase.getWorker(assignee).then(async (res) => {
       if (!res) {
-        this.supabase.createWorker(assignee).then((res) => {
-          this.supabase.setAssignee(codes, res.username);
+        await this.supabase.createWorker(assignee).then(async (res) => {
+          await this.supabase.setAssignee(codes, res.username).then(() => {});
         });
       } else {
-        this.supabase.setAssignee(codes, res.username);
+        await this.supabase.setAssignee(codes, res.username).then(() => {});
       }
     });
   }
@@ -106,10 +108,10 @@ export class CodeService {
       code.validateTwo = vaultMgr;
       code.status = 'valid';
       await this.supabase.validateCode(code).then((res) => {
-        validateFeedback = 'Validation successful. Once another manager validates, the vault will close';
+        validateFeedback = 'Validation successful. The vault will now be closed';
       });
       // mark all others invalid
-      this.supabase.invalidateAllOtherCodes(code);
+      await this.supabase.invalidateAllOtherCodes(code);
     } else {
       validateFeedback = 'You have either already validated this code, or someone beat you to the second validation';
     }
@@ -126,6 +128,8 @@ export class CodeService {
       for (let j = 0; j < assignedCodes[0].code.length; j++) {
         copyableCodes = copyableCodes + assignedCodes[0].code.at(j) + ' ';
       }
+    } else {
+      copyableCodes = assignedCodes[0].code;
     }
     // One less than total since we start with one loaded
     for (let i = 1; i < assignedCodes.length; i++) {
