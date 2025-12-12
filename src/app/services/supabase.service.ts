@@ -21,13 +21,14 @@ export class SupabaseService {
   _session: AuthSession | null = null;
   user: User | null = null;
   vaultCodeTable = '';
-  settingsTable = getConfig().settings_table_name;
-  workersTable = getConfig().workers_table_name;
+  settingsTable = '';
+  workersTable = '';
 
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
-    // this.vaultCodeTable = process.env['CODE_TABLE_NAME'] || '';
-    console.log();
+    this.vaultCodeTable = environment.code_table_name;
+    this.settingsTable = environment.settings_table_name;
+    this.workersTable = environment.workers_table_name;
   }
 
   get session() {
@@ -50,7 +51,7 @@ export class SupabaseService {
   }
 
   worker(username: string) {
-    let data = this.supabase.from('workers').select('*').eq('username', username).single();
+    let data = this.supabase.from(this.workersTable).select('*').eq('username', username).single();
     return data;
   }
 
@@ -118,7 +119,7 @@ export class SupabaseService {
   async insertCodes(codes: VaultCode[]) {
     // for (let code of codes) {
     await this.supabase
-      .from('VaultCode')
+      .from(this.vaultCodeTable)
       .insert(codes)
       .select()
       .then(({ data }) => {
@@ -128,13 +129,13 @@ export class SupabaseService {
   }
 
   async getAllCodes() {
-    let data = await this.supabase.from('VaultCode').select('*').order('code', { ascending: true });
+    let data = await this.supabase.from(this.vaultCodeTable).select('*').order('code', { ascending: true });
     return data;
   }
 
   async setAssignee(codes: VaultCode[], assignee: string) {
     let data = await this.supabase
-      .from('VaultCode')
+      .from(this.vaultCodeTable)
       .update([
         {
           assignee: assignee,
@@ -150,7 +151,7 @@ export class SupabaseService {
 
   async setStatus(codes: VaultCode[], status: 'valid' | 'invalid' | 'in-progress') {
     let data = await this.supabase
-      .from('VaultCode')
+      .from(this.vaultCodeTable)
       .update([
         {
           status: status,
@@ -181,7 +182,7 @@ export class SupabaseService {
 
   async createWorker(username: string) {
     let data = await this.supabase
-      .from('workers')
+      .from(this.workersTable)
       .insert([{ username: username, codes_attempted: 0, vaults_participated: 0, correct_codes: 0 }])
       .select()
       .single();
@@ -190,13 +191,13 @@ export class SupabaseService {
 
   // Get all workers with codes currently in progress
   async getCurrentWorkers() {
-    let data = await this.supabase.from('workers').select('*, VaultCode!inner()').eq('VaultCode.status', 'in-progress');
+    let data = await this.supabase.from(this.workersTable).select('*, VaultCode!inner()').eq('VaultCode.status', 'in-progress');
     return data;
   }
 
   async getCodesByWorker(username: string) {
     let data = await this.supabase
-      .from('VaultCode')
+      .from(this.vaultCodeTable)
       .select('*')
       .eq('assignee', username)
       .eq('status', 'in-progress')
@@ -206,7 +207,7 @@ export class SupabaseService {
 
   async validateCode(code: VaultCode) {
     let data = await this.supabase
-      .from('VaultCode')
+      .from(this.vaultCodeTable)
       .update([
         {
           status: code.status,
@@ -222,7 +223,7 @@ export class SupabaseService {
   // Set all codes but specified to invalid
   async invalidateAllOtherCodes(code: VaultCode) {
     let data = await this.supabase
-      .from('VaultCode')
+      .from(this.vaultCodeTable)
       .update([
         {
           status: 'invalid',
@@ -230,19 +231,19 @@ export class SupabaseService {
       ])
       .eq('vaultName', code.vaultName)
       .neq('code', code.code);
-    // let data = await this.supabase.from('VaultCode').select('*').eq('vaultName', code.vaultName).neq('code', code.code);
+    // let data = await this.supabase.from(this.vaultCodeTable).select('*').eq('vaultName', code.vaultName).neq('code', code.code);
     await this.closeVault();
     return data;
   }
 
   async getSetting(name: string) {
-    let data = await this.supabase.from('Settings').select('*').eq('setting_name', name).single();
+    let data = await this.supabase.from(this.settingsTable).select('*').eq('setting_name', name).single();
     return data.data.setting_value;
   }
 
   async createNewVault(name: string) {
     let data = await this.supabase
-      .from('Settings')
+      .from(this.settingsTable)
       .update([
         {
           setting_value: name,
@@ -254,19 +255,19 @@ export class SupabaseService {
 
   // Get vault total codes, codes tested, and codes waiting
   async getVaultStats(vaultName: string): Promise<any> {
-    let dataTotal = await this.supabase.from('VaultCode').select('*', { count: 'exact', head: true }).eq('vaultName', vaultName);
+    let dataTotal = await this.supabase.from(this.vaultCodeTable).select('*', { count: 'exact', head: true }).eq('vaultName', vaultName);
     let dataInvalid = await this.supabase
-      .from('VaultCode')
+      .from(this.vaultCodeTable)
       .select('*', { count: 'exact', head: true })
       .eq('vaultName', vaultName)
       .eq('status', 'invalid');
     let dataAssigned = await this.supabase
-      .from('VaultCode')
+      .from(this.vaultCodeTable)
       .select('*', { count: 'exact', head: true })
       .eq('vaultName', vaultName)
       .eq('status', 'in-progress');
     let dataRemaining = await this.supabase
-      .from('VaultCode')
+      .from(this.vaultCodeTable)
       .select('*', { count: 'exact', head: true })
       .eq('vaultName', vaultName)
       .eq('status', 'not-started');
@@ -274,9 +275,9 @@ export class SupabaseService {
   }
 
   async closeVault() {
-    let currVault = await this.supabase.from('Settings').select('*').eq('setting_name', 'active_vault').single();
+    let currVault = await this.supabase.from(this.settingsTable).select('*').eq('setting_name', 'active_vault').single();
     let ageConf = await this.supabase
-      .from('Settings')
+      .from(this.settingsTable)
       .update([
         {
           setting_value: currVault.data.setting_value,
@@ -284,7 +285,7 @@ export class SupabaseService {
       ])
       .eq('setting_name', 'last_vault');
     let remActive = await this.supabase
-      .from('Settings')
+      .from(this.settingsTable)
       .update([
         {
           setting_value: null,
@@ -297,7 +298,7 @@ export class SupabaseService {
   // Find the next X codes in the given vault
   async queryNextCodes(number: number, vaultName: string) {
     let data = await this.supabase
-      .from('VaultCode')
+      .from(this.vaultCodeTable)
       .select('*')
       .eq('vaultName', vaultName)
       .eq('status', 'not-started')
@@ -307,7 +308,7 @@ export class SupabaseService {
   }
 
   async getCodebyCode(code: string, vaultName: string) {
-    let data = await this.supabase.from('VaultCode').select('*').eq('code', code).eq('vaultName', vaultName).single();
+    let data = await this.supabase.from(this.vaultCodeTable).select('*').eq('code', code).eq('vaultName', vaultName).single();
     return data.data;
   }
 }
