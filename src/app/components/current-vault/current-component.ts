@@ -22,6 +22,7 @@ export class CurrentComponent {
   profile = input.required<Profile | null>();
 
   vaultActive = signal<boolean>(false);
+  vaultName = signal<string>('');
   formatKeys = ['None', 'Underlined', 'Bold'];
   refresh = signal<boolean>(false);
 
@@ -74,6 +75,7 @@ export class CurrentComponent {
         this.vaultActive.set(false);
       } else {
         this.vaultActive.set(true);
+        this.vaultName.set(res);
         this.supabase.getVaultStats(res).then((stats) => {
           this.totalCodes.set(stats.total);
           this.testedCodes.set(stats.invalid);
