@@ -8,7 +8,7 @@ import { AccountComponent } from '../pages/user/account';
 
 @Component({
   standalone: true,
-  imports: [RouterOutlet, CommonModule, AuthComponent],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: 'default.layout.html',
 })
 export class LayoutDefault {

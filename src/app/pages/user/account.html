@@ -1,5 +1,4 @@
 <form [formGroup]="updateProfileForm" (ngSubmit)="updateProfile()" class="form-widget">
-  <!-- <app-avatar [avatarUrl]="this.avatarUrl" (upload)="updateAvatar($event)"> </app-avatar> -->
   <div>
     <label for="email">Email</label>
     <input id="email" type="text" [value]="user.email" disabled />
@@ -17,7 +16,5 @@
     <button type="submit" class="button primary block" [disabled]="loading">{{ loading ? "Loading ..." : "Update" }}</button>
   </div>
 
-  <div>
-    <!-- <button class="button block" (click)="signOut()">Sign Out</button> -->
-  </div>
+  <div></div>
 </form>

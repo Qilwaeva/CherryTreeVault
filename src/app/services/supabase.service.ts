@@ -23,12 +23,14 @@ export class SupabaseService {
   vaultCodeTable = '';
   settingsTable = '';
   workersTable = '';
+  baseUrl = '';
 
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
     this.vaultCodeTable = environment.code_table_name;
     this.settingsTable = environment.settings_table_name;
     this.workersTable = environment.workers_table_name;
+    this.baseUrl = environment.api.base;
   }
 
   get session() {
@@ -97,6 +99,18 @@ export class SupabaseService {
 
   signOut() {
     return this.supabase.auth.signOut();
+  }
+
+  resetPassword(email: string) {
+    return this.supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: this.baseUrl + '/update-password',
+    });
+  }
+
+  updatePassword(newPassword: string) {
+    return this.supabase.auth.updateUser({
+      password: newPassword,
+    });
   }
 
   updateProfile(profile: Profile) {
@@ -195,14 +209,29 @@ export class SupabaseService {
     return data;
   }
 
-  async getCodesByWorker(username: string) {
+  // Get all workers
+  async getAllWorkers() {
+    let data = await this.supabase.from(this.workersTable).select('*');
+    return data;
+  }
+
+  async getCodesByWorker(username: string, status: string) {
     let data = await this.supabase
       .from(this.vaultCodeTable)
       .select('*')
       .eq('assignee', username)
-      .eq('status', 'in-progress')
+      .eq('status', status)
       .order('code', { ascending: true });
     return data.data;
+  }
+
+  async getCodeCountByWorker(username: string, status: string): Promise<number> {
+    let data = await this.supabase
+      .from(this.vaultCodeTable)
+      .select('*', { count: 'exact', head: true })
+      .eq('assignee', username)
+      .eq('status', status);
+    return data.count || 0;
   }
 
   async validateCode(code: VaultCode) {

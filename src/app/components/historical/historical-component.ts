@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Profile, SupabaseService } from '../../services/supabase.service';
 import { CommonModule } from '@angular/common';
+import { CodeService } from '../../services/code-service';
+import { Worker } from '../../../models/worker';
+import { WorkerCodes } from '../../../models/worker-codes';
 
 @Component({
   selector: 'historical-component',
@@ -10,39 +13,40 @@ import { CommonModule } from '@angular/common';
   standalone: true,
 })
 export class HistoricalComponent {
-  signInForm!: FormGroup;
+  currentWorkers = signal<Worker[]>([]);
+  workerCodes = signal<WorkerCodes[]>([]);
+
   constructor(
-    private readonly supabase: SupabaseService,
-    private readonly formBuilder: FormBuilder
+    private readonly codeService: CodeService,
+    private readonly supabase: SupabaseService
   ) {}
 
   loading = false;
   ngOnInit() {
-    this.signInForm = this.formBuilder.group({
-      email: '',
-      username: '',
+    this.getAllWorkers();
+  }
+
+  // TODO add loading
+  getAllWorkers() {
+    this.supabase.getAllWorkers().then((res) => {
+      if (res.data != null && res.data.length > 0) {
+        this.currentWorkers.set(res.data);
+        this.currentWorkers().forEach(async (worker) => {
+          let invalidCount = await this.getWorkerCodeCount(worker.username, 'invalid');
+          let validCount = await this.getWorkerCodeCount(worker.username, 'valid');
+          let workerCode: WorkerCodes = {
+            worker: worker,
+            invalidCodes: invalidCount,
+            validCodes: validCount,
+          };
+          this.workerCodes.set([...this.workerCodes(), workerCode]);
+        });
+      }
     });
   }
 
-  async onSubmit(): Promise<void> {
-    try {
-      this.loading = true;
-      const email = this.signInForm.value.email as string;
-      const profile = {
-        username: this.signInForm.value.username as string,
-        vault_manager: false,
-        admin: false,
-      } as Profile;
-      const { error } = await this.supabase.signIn(email, profile);
-      if (error) throw error;
-      alert('Check your email for the login link!');
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message);
-      }
-    } finally {
-      this.signInForm.reset();
-      this.loading = false;
-    }
+  async getWorkerCodeCount(username: string, status: string) {
+    let count = await this.supabase.getCodeCountByWorker(username, status);
+    return count;
   }
 }

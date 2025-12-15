@@ -1,0 +1,76 @@
+<div class="items-center sm:pr-8">
+  <form [formGroup]="assignCodesForm" class="form-widget">
+    <div class="flex justify-center">
+      <div>
+        <div class="flex row py-1">
+          <div class="flex items-center pr-2">
+            <label for="username">Name:</label>
+          </div>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            placeholder="Worker Name"
+          />
+        </div>
+        <div class="flex row py-1">
+          <div class="flex items-center pr-2">
+            <label for="quantity">Number of Codes:</label>
+          </div>
+          <input
+            type="number"
+            id="quantity"
+            formControlName="quantity"
+            class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+          />
+        </div>
+        <div class="flex row py-1">
+          <div class="flex items-center pr-2">
+            <label for="grouping">Group By #:</label>
+          </div>
+          <input
+            type="number"
+            id="grouping"
+            formControlName="grouping"
+            class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+          />
+        </div>
+        <div class="flex row py-1">
+          <div class="flex items-center pr-2">
+            <label for="formatting">Formatting:</label>
+          </div>
+          <select
+            id="formatting"
+            formControlName="formatting"
+            class="select select-bordered border-base-content bg-base-200 text-base-content w-48 ml-auto"
+            (change)="changeFormatting($event)"
+          >
+            <option *ngFor="let option of formatKeys">{{option}}</option>
+          </select>
+        </div>
+        <button
+          class="flex btn mx-auto bg-primary text-primary-content hover:bg-secondary hover:text-secondary-content"
+          type="submit"
+          (click)="onSubmitRequest()"
+        >
+          {{ submitLoading ? "Loading..." : "Submit" }}
+        </button>
+        @if (!submitValid) {
+        <div class="text-error">Validation Error: {{validationError}}</div>
+        } @if (copyableCodes().length > 0) {
+        <div class="flex justify-center py-3">
+          <div class="flex border border-base-content rounded-md">
+            <div [innerHTML]="copyableCodes()"></div>
+
+            <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-2 text-sm" (click)="discordFormat()">
+              Copy
+            </button>
+          </div>
+        </div>
+
+        }
+      </div>
+    </div>
+  </form>
+</div>

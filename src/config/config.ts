@@ -8,7 +8,7 @@ const config: Config = {
     settings_table_name: 'SettingsTest',
     workers_table_name: 'workersTest',
     api: {
-      base: 'http://localhost:8080',
+      base: 'http://localhost:4200',
     },
   },
   dev: {

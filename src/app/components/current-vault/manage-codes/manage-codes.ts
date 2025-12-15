@@ -7,7 +7,6 @@ import { Profile, SupabaseService } from '../../../services/supabase.service';
 import { AuthSession, User } from '@supabase/supabase-js';
 import { VaultCode } from '../../../../models/vault-code';
 import { Worker } from '../../../../models/worker';
-import { WorkerTask } from '../../../../models/worker-task';
 
 @Component({
   selector: 'manage-codes',
@@ -80,7 +79,7 @@ export class ManageCodes {
 
   getWorkerCodes(worker: Worker) {
     this.supabase
-      .getCodesByWorker(worker.username)
+      .getCodesByWorker(worker.username, 'in-progress')
       .then((codeRes) => {
         if (codeRes != null && codeRes.length > 0) {
           this.workerTasks.set(codeRes);
@@ -108,7 +107,7 @@ export class ManageCodes {
           } else {
             let vaultCode = vCode;
             // Give user credit for all the codes they tried before the successful one
-            this.supabase.getCodesByWorker(vaultCode.assignee).then((codeRes) => {
+            this.supabase.getCodesByWorker(vaultCode.assignee, 'in-progress').then((codeRes) => {
               if (codeRes != null && codeRes.length > 0) {
                 let codeIndex = codeRes.findIndex((c: VaultCode) => c.code === vaultCode.code);
                 let attemptedCodes = codeRes.splice(0, codeIndex);

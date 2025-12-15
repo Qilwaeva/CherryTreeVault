@@ -5,4 +5,7 @@ export const environment = {
   code_table_name: 'VaultCodeTest',
   settings_table_name: 'SettingsTest',
   workers_table_name: 'workersTest',
+  api: {
+    base: 'http://localhost:4200',
+  },
 };

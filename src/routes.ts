@@ -25,20 +25,30 @@ const routeConfig: Routes = [
     component: LayoutDefault,
     children: [
       {
-        path: 'home',
-        component: Landing,
-        title: 'Home page',
-      },
-      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full',
       },
-      // {
-      //   path: 'cards',
-      //   loadComponent: () => import('./app/pages/cards/list.page').then(m => m.PageListCards),
-      //   title: 'List Cards',
-      // },
+      {
+        path: 'home',
+        loadComponent: () => import('./app/pages/landing.page').then((m) => m.Landing),
+        title: 'Home page',
+      },
+      {
+        path: 'login',
+        loadComponent: () => import('./app/pages/user/auth').then((m) => m.AuthComponent),
+        title: 'Login',
+      },
+      {
+        path: 'request-pw-change',
+        loadComponent: () => import('./app/pages/user/request-pw-change.page').then((m) => m.RequestPwChange),
+        title: 'Request New Password',
+      },
+      {
+        path: 'update-password',
+        loadComponent: () => import('./app/pages/user/reset-pw.page').then((m) => m.ResetPassword),
+        title: 'Reset Password',
+      },
       // {
       //   path: 'card/:id',
       //   runGuardsAndResolvers: "always",
