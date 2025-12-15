@@ -10,11 +10,12 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MarkdownModule } from 'ngx-markdown';
 import { ManageCodes } from './manage-codes/manage-codes';
 import { VaultForm } from '../../../models/vault-form';
+import { AssignCodes } from './assign-codes/assign-codes';
 
 @Component({
   selector: 'current-component',
   templateUrl: './current-component.html',
-  imports: [CommonModule, ReactiveFormsModule, ClipboardModule, MarkdownModule, ManageCodes],
+  imports: [CommonModule, ReactiveFormsModule, ClipboardModule, MarkdownModule, ManageCodes, AssignCodes],
   standalone: true,
 })
 export class CurrentComponent {
@@ -23,7 +24,6 @@ export class CurrentComponent {
 
   vaultActive = signal<boolean>(false);
   vaultName = signal<string>('');
-  formatKeys = ['None', 'Underlined', 'Bold'];
   refresh = signal<boolean>(false);
 
   totalCodes = signal<number>(0);
@@ -33,33 +33,17 @@ export class CurrentComponent {
 
   assignCodesForm!: FormGroup;
   vaultForm!: FormGroup;
+
+  generateLoading = false;
+
   constructor(
     private readonly codeService: CodeService,
     private readonly supabase: SupabaseService,
     private readonly formBuilder: FormBuilder
   ) {}
 
-  submitLoading = false;
-  generateLoading = false;
-  requestForm: CodeForm = {
-    worker: '',
-    totalCodes: 0,
-    grouping: 0,
-    formatting: 'None',
-  };
-  validationError = '';
-  submitValid = true;
-  assignedCodes: VaultCode[] = [];
-  copyableCodes = signal<string>('');
-
   ngOnInit() {
     this.checkActiveVault();
-    this.assignCodesForm = this.formBuilder.group({
-      username: '',
-      quantity: 0,
-      grouping: 0,
-      formatting: 'None',
-    });
     this.vaultForm = this.formBuilder.group({
       vaultName: '',
       totalDigits: 0,
@@ -86,67 +70,6 @@ export class CurrentComponent {
     });
   }
 
-  changeFormatting(event: any) {
-    this.requestForm.formatting = event.target.value;
-  }
-
-  async onSubmitRequest(): Promise<void> {
-    try {
-      this.submitLoading = true;
-      this.requestForm.worker = this.assignCodesForm.value.username as string;
-      this.requestForm.totalCodes = this.assignCodesForm.value.quantity as number;
-      this.requestForm.grouping = this.assignCodesForm.value.grouping as number;
-      await this.validateValues();
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message);
-        this.submitLoading = false;
-      }
-    } finally {
-      if (this.submitValid) {
-        this.requestCodes();
-        this.assignCodesForm.reset();
-      }
-      this.submitLoading = false;
-    }
-  }
-
-  async validateValues() {
-    if (this.requestForm.worker.length < 1) {
-      this.validationError = 'Worker name must be at least 1 character';
-      this.submitValid = false;
-    } else {
-      await this.supabase.getCodesByWorker(this.requestForm.worker).then((codes) => {
-        if (codes != null && codes.length > 0) {
-          this.validationError = 'This worker already has codes assigned';
-          this.submitValid = false;
-        }
-      });
-    }
-    if (this.requestForm.totalCodes < 1 || this.requestForm.totalCodes > 80) {
-      this.validationError = 'Please enter a number of codes between 1 and 80\r\n';
-      this.submitValid = false;
-    }
-    if (this.requestForm.grouping > this.requestForm.totalCodes || this.requestForm.grouping < 1) {
-      this.validationError = 'Grouping value must be between 1 and number of codes';
-      this.submitValid = false;
-    }
-  }
-
-  requestCodes() {
-    this.codeService.assignCodes(this.requestForm.worker, this.requestForm.totalCodes).then((res) => {
-      this.assignedCodes = res;
-      if (this.requestForm.totalCodes > this.requestForm.grouping) {
-        this.copyableCodes.set(this.codeService.formatCodes(this.assignedCodes, this.requestForm.formatting, this.requestForm.grouping));
-        this.refresh.set(true);
-      }
-    });
-  }
-
-  discordFormat() {
-    navigator.clipboard.writeText(this.codeService.discordFormat(this.copyableCodes()));
-  }
-
   async generateVault() {
     try {
       this.generateLoading = true;
@@ -161,10 +84,6 @@ export class CurrentComponent {
         this.generateLoading = false;
       }
     } finally {
-      if (this.submitValid) {
-        // this.requestCodes();
-        this.vaultForm.reset();
-      }
       this.generateLoading = false;
       this.checkActiveVault();
     }
