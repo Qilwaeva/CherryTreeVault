@@ -42,7 +42,11 @@
         </div>
       </div>
       <div>
-        <button class="flex btn mx-auto bg-secondary text-secondary-content" type="submit" (click)="onSubmit()">
+        <button
+          class="flex btn mx-auto bg-primary text-primary-content hover:bg-secondary hover:text-secondary-content"
+          type="submit"
+          (click)="onSubmit()"
+        >
           {{ loading ? "Loading..." : "Submit" }}
         </button>
       </div>
@@ -77,7 +81,11 @@
         </div>
       </div>
       <div>
-        <button class="flex btn mx-auto bg-secondary text-secondary-content" type="submit" (click)="signIn()">
+        <button
+          class="flex btn mx-auto bg-primary text-primary-content hover:bg-secondary hover:text-secondary-content"
+          type="submit"
+          (click)="signIn()"
+        >
           {{ loading ? "Loading..." : "Submit" }}
         </button>
       </div>

@@ -66,7 +66,11 @@
                   <option *ngFor="let option of formatKeys">{{option}}</option>
                 </select>
               </div>
-              <button class="flex btn mx-auto bg-secondary text-secondary-content" type="submit" (click)="onSubmitRequest()">
+              <button
+                class="flex btn mx-auto bg-primary text-primary-content hover:bg-secondary hover:text-secondary-content"
+                type="submit"
+                (click)="onSubmitRequest()"
+              >
                 {{ submitLoading ? "Loading..." : "Submit" }}
               </button>
               @if (!submitValid) {
@@ -145,7 +149,11 @@
             />
           </div>
 
-          <button class="flex btn mx-auto bg-secondary text-secondary-content m-2" type="submit" (click)="generateVault()">
+          <button
+            class="flex btn mx-auto bg-primary text-primary-content m-2 hover:bg-secondary hover:text-secondary-content"
+            type="submit"
+            (click)="generateVault()"
+          >
             {{ generateLoading ? "Loading..." : "Generate" }}
           </button>
         </div>

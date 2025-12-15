@@ -19,6 +19,21 @@ export class Landing {
   profile = signal<Profile | null>(null);
   user = signal<User | null>(null);
 
+  litSayings = [
+    'a dingdong',
+    'a Path of Pain completer',
+    'a big baby',
+    'a stinky Sentinel',
+    'a cute lil candle',
+    'the best bug squasher',
+    'a prideful Halo owner',
+    'a Krampus Candle',
+    "Mandii's favorite candle",
+    'a butt',
+    'a deLIGHT',
+  ];
+  activeLitSaying = signal<string>('');
+
   constructor(
     private readonly supabase: SupabaseService,
     private readonly codeService: CodeService,
@@ -63,5 +78,9 @@ export class Landing {
   logout() {
     this.supabase.signOut();
     this.router.navigate(['/']);
+  }
+
+  generateLitSaying() {
+    this.activeLitSaying.set(this.litSayings[Math.floor(Math.random() * this.litSayings.length)]);
   }
 }
