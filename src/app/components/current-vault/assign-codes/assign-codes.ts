@@ -6,8 +6,6 @@ import { CodeService } from '../../../services/code-service';
 import { Profile, SupabaseService } from '../../../services/supabase.service';
 import { AuthSession, User } from '@supabase/supabase-js';
 import { VaultCode } from '../../../../models/vault-code';
-import { Worker } from '../../../../models/worker';
-import { WorkerTask } from '../../../../models/worker-task';
 import { CodeForm } from '../../../../models/code-form';
 
 @Component({
@@ -82,7 +80,7 @@ export class AssignCodes {
       this.validationError = 'Worker name must be at least 1 character';
       this.submitValid = false;
     } else {
-      await this.supabase.getCodesByWorker(this.requestForm.worker).then((codes) => {
+      await this.supabase.getCodesByWorker(this.requestForm.worker, 'in-progress').then((codes) => {
         if (codes != null && codes.length > 0) {
           this.validationError = 'This worker already has codes assigned';
           this.submitValid = false;

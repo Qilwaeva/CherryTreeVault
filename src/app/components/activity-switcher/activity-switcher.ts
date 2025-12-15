@@ -19,7 +19,7 @@ enum Activity {
 })
 export class ActivitySwitcher {
   Activity = Activity;
-  activity = signal<Activity>(Activity.CurrentVault);
+  activity = signal<Activity>(Activity.Historical);
   user = input.required<User | null>();
   profile = input.required<Profile | null>();
   constructor() {}

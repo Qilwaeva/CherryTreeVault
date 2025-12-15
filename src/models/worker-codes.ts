@@ -1,7 +1,8 @@
 import { VaultCode } from './vault-code';
 import { Worker } from './worker';
 
-export interface WorkerTask {
+export interface WorkerCodes {
   worker: Worker;
-  codes: VaultCode[];
+  invalidCodes: number;
+  validCodes: number;
 }

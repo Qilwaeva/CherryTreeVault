@@ -1,32 +1,22 @@
-<!-- <div class="row flex-center flex">
-  <div class="col-6 form-widget" aria-live="polite">
-    <h1 class="header">Supabase + Angular</h1>
-    <p class="description">Sign in via magic link with your email below</p>
-    <form [formGroup]="signInForm" (ngSubmit)="onSubmit()" class="form-widget">
-      <div>
-        <label for="email">Email</label>
-        <input
-          id="email"
-          formControlName="email"
-          class="inputField"
-          type="email"
-          placeholder="Your email"
-        />
-        <label for="username">Username</label>
-        <input
-          id="username"
-          formControlName="username"
-          class="inputField"
-          type="username"
-          placeholder="Your username"
-        />
-      </div>
-      <div>
-        <button type="submit" class="button block" [disabled]="loading">
-          {{ loading ? "Loading" : "Send magic link" }}
-        </button>
-      </div>
-    </form>
+<div class="w-full">
+  <div class="flex flex-row">
+    <table class="table-auto border border-collapse">
+      <thead>
+        <tr>
+          <th class="p-1 border">Worker Name</th>
+          <th class="p-1 border">Codes Tested</th>
+          <th class="p-1 border">Correct Codes</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (worker of workerCodes(); track worker.worker.id) {
+        <tr>
+          <td class="p-1 border">{{worker.worker.username}}</td>
+          <td class="p-1 border">{{worker.invalidCodes}}</td>
+          <td class="p-1 border">{{worker.validCodes}}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
   </div>
-</div> -->
-This is MVP + 1, be kind
+</div>

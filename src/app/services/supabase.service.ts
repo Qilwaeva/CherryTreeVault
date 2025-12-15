@@ -195,14 +195,29 @@ export class SupabaseService {
     return data;
   }
 
-  async getCodesByWorker(username: string) {
+  // Get all workers
+  async getAllWorkers() {
+    let data = await this.supabase.from(this.workersTable).select('*');
+    return data;
+  }
+
+  async getCodesByWorker(username: string, status: string) {
     let data = await this.supabase
       .from(this.vaultCodeTable)
       .select('*')
       .eq('assignee', username)
-      .eq('status', 'in-progress')
+      .eq('status', status)
       .order('code', { ascending: true });
     return data.data;
+  }
+
+  async getCodeCountByWorker(username: string, status: string): Promise<number> {
+    let data = await this.supabase
+      .from(this.vaultCodeTable)
+      .select('*', { count: 'exact', head: true })
+      .eq('assignee', username)
+      .eq('status', status);
+    return data.count || 0;
   }
 
   async validateCode(code: VaultCode) {
