@@ -9,4 +9,14 @@
 <div class="flex px-4 py-8 w-full">
   <activity-switcher class="w-full" [user]="user()" [profile]="profile()"></activity-switcher>
 </div>
-}
+@if (profile()?.username === 'Litwicker') {
+<button
+  class="flex btn ml-2 bg-primary text-primary-content hover:bg-secondary hover:text-secondary-content"
+  type="button"
+  (click)="generateLitSaying()"
+>
+  Lit's Special Sayings
+</button>
+@if (activeLitSaying() !== '') {
+<div class="ml-4">Litwick is {{activeLitSaying()}}</div>
+} }}

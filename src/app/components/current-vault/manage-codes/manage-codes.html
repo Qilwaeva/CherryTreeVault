@@ -8,7 +8,10 @@
         <input type="test" id="code" formControlName="code" class="input border border-base-content bg-base-200 w-48 input-md" />
       </div>
     </form>
-    <button class="flex btn btn-md bg-primary text-primary-content border-primary-content/60 m-1 text-sm mx-auto" (click)="validateCode()">
+    <button
+      class="flex btn btn-md bg-primary text-primary-content m-1 text-sm mx-auto hover:bg-secondary hover:text-secondary-content"
+      (click)="validateCode()"
+    >
       Select Valid
     </button>
     @if (validateError().length > 0) {
