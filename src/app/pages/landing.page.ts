@@ -12,7 +12,7 @@ import { ActivitySwitcher } from '../components/activity-switcher/activity-switc
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.page.html',
-  imports: [CommonModule, ActivitySwitcher],
+  imports: [CommonModule, ActivitySwitcher, AuthComponent],
   standalone: true,
 })
 export class Landing {

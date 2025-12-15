@@ -24,5 +24,5 @@ class AppComponent implements OnInit {
 }
 
 bootstrapApplication(AppComponent, {
-  providers: [provideRouter(routeConfig), provideHttpClient(), importProvidersFrom(MarkdownModule.forRoot())],
+  providers: [provideRouter(routeConfig), provideHttpClient()],
 }).catch((err) => console.error(err));

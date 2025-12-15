@@ -23,12 +23,14 @@ export class SupabaseService {
   vaultCodeTable = '';
   settingsTable = '';
   workersTable = '';
+  baseUrl = '';
 
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
     this.vaultCodeTable = environment.code_table_name;
     this.settingsTable = environment.settings_table_name;
     this.workersTable = environment.workers_table_name;
+    this.baseUrl = environment.api.base;
   }
 
   get session() {
@@ -97,6 +99,18 @@ export class SupabaseService {
 
   signOut() {
     return this.supabase.auth.signOut();
+  }
+
+  resetPassword(email: string) {
+    return this.supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: this.baseUrl + '/update-password',
+    });
+  }
+
+  updatePassword(newPassword: string) {
+    return this.supabase.auth.updateUser({
+      password: newPassword,
+    });
   }
 
   updateProfile(profile: Profile) {

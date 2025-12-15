@@ -5,4 +5,7 @@ export const environment = {
   code_table_name: 'VaultCode',
   settings_table_name: 'Settings',
   workers_table_name: 'workers',
+  api: {
+    base: 'https://cherrytreevault.pages.dev',
+  },
 };
