@@ -1,22 +1,57 @@
 <div class="w-full">
-  <div class="flex flex-row">
-    <table class="table-auto border border-collapse">
-      <thead>
-        <tr>
-          <th class="p-1 border">Worker Name</th>
-          <th class="p-1 border">Codes Tested</th>
-          <th class="p-1 border">Correct Codes</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (worker of workerCodes(); track worker.worker.id) {
-        <tr>
-          <td class="p-1 border">{{worker.worker.username}}</td>
-          <td class="p-1 border">{{worker.invalidCodes}}</td>
-          <td class="p-1 border">{{worker.validCodes}}</td>
-        </tr>
-        }
-      </tbody>
-    </table>
+  <div class="grid grid-cols-1 sm:grid-cols-2 mt-8 mx-4">
+    <div class="col-span-1">
+      <div class="text-lg text-center font-bold">All Time Codes</div>
+      <table class="table-auto border border-collapse mx-auto">
+        <thead>
+          <tr>
+            <th class="p-1 border">Worker Name</th>
+            <th class="p-1 border">Codes Tested</th>
+            <th class="p-1 border">Correct Codes</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (allWorkerCodes().length == 0) {
+          <tr>
+            <div class="w-full text-center">No codes yet!</div>
+          </tr>
+          } @for (worker of allWorkerCodes(); track worker.worker.id) {
+          <tr>
+            <td class="p-1 border">{{worker.worker.username}}</td>
+            <td class="p-1 border">{{worker.invalidCodes}}</td>
+            <td class="p-1 border">{{worker.validCodes}}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="col-span-1">
+      <div class="text-lg text-center font-bold">Last Vault Codes</div>
+      @if (lastVaultName().length > 0) {
+      <div class="text-center">Vault Name: {{lastVaultName()}}</div>
+      }
+      <table class="table-auto border border-collapse mx-auto">
+        <thead>
+          <tr>
+            <th class="p-1 border">Worker Name</th>
+            <th class="p-1 border">Codes Tested</th>
+            <th class="p-1 border">Correct Codes</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (currentWorkerCodes().length == 0) {
+          <tr>
+            <div class="w-full text-center">No codes yet!</div>
+          </tr>
+          } @for (worker of currentWorkerCodes(); track worker.worker.id) {
+          <tr>
+            <td class="p-1 border">{{worker.worker.username}}</td>
+            <td class="p-1 border">{{worker.invalidCodes}}</td>
+            <td class="p-1 border">{{worker.validCodes}}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

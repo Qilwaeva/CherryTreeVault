@@ -13,8 +13,11 @@ import { WorkerCodes } from '../../../models/worker-codes';
   standalone: true,
 })
 export class HistoricalComponent {
+  allWorkers = signal<Worker[]>([]);
   currentWorkers = signal<Worker[]>([]);
-  workerCodes = signal<WorkerCodes[]>([]);
+  allWorkerCodes = signal<WorkerCodes[]>([]);
+  currentWorkerCodes = signal<WorkerCodes[]>([]);
+  lastVaultName = signal<string>('');
 
   constructor(
     private readonly codeService: CodeService,
@@ -24,24 +27,57 @@ export class HistoricalComponent {
   loading = false;
   ngOnInit() {
     this.getAllWorkers();
+    this.getLastVaultWorkers();
   }
 
   // TODO add loading
   getAllWorkers() {
-    this.supabase.getAllWorkers().then((res) => {
-      if (res.data != null && res.data.length > 0) {
-        this.currentWorkers.set(res.data);
-        this.currentWorkers().forEach(async (worker) => {
-          let invalidCount = await this.getWorkerCodeCount(worker.username, 'invalid');
-          let validCount = await this.getWorkerCodeCount(worker.username, 'valid');
-          let workerCode: WorkerCodes = {
-            worker: worker,
-            invalidCodes: invalidCount,
-            validCodes: validCount,
-          };
-          this.workerCodes.set([...this.workerCodes(), workerCode]);
-        });
-      }
+    this.loading = true;
+    this.supabase
+      .getAllWorkers()
+      .then((res) => {
+        if (res.data != null && res.data.length > 0) {
+          this.allWorkers.set(res.data);
+          this.allWorkers().forEach(async (worker) => {
+            let invalidCount = await this.getWorkerCodeCount(worker.username, 'invalid');
+            let validCount = await this.getWorkerCodeCount(worker.username, 'valid');
+            let workerCode: WorkerCodes = {
+              worker: worker,
+              invalidCodes: invalidCount,
+              validCodes: validCount,
+            };
+            this.allWorkerCodes.set([...this.allWorkerCodes(), workerCode]);
+          });
+        }
+      })
+      .finally(() => {
+        this.loading = false;
+      });
+  }
+
+  getLastVaultWorkers() {
+    this.supabase
+      .getCurrentWorkers()
+      .then((res) => {
+        if (res.data != null && res.data.length > 0) {
+          this.currentWorkers.set(res.data);
+          this.currentWorkers().forEach(async (worker) => {
+            let invalidCount = await this.getWorkerCodeCount(worker.username, 'invalid');
+            let validCount = await this.getWorkerCodeCount(worker.username, 'valid');
+            let workerCode: WorkerCodes = {
+              worker: worker,
+              invalidCodes: invalidCount,
+              validCodes: validCount,
+            };
+            this.currentWorkerCodes.set([...this.currentWorkerCodes(), workerCode]);
+          });
+        }
+      })
+      .finally(() => {
+        this.loading = false;
+      });
+    this.supabase.getSetting('last_vault').then((res) => {
+      this.lastVaultName.set(res);
     });
   }
 
