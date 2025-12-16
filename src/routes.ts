@@ -49,6 +49,11 @@ const routeConfig: Routes = [
         loadComponent: () => import('./app/pages/user/reset-pw.page').then((m) => m.ResetPassword),
         title: 'Reset Password',
       },
+      {
+        path: 'manage-users',
+        loadComponent: () => import('./app/pages/user/manage.page').then((m) => m.PageManageUsers),
+        title: 'Manage Users',
+      },
       // {
       //   path: 'card/:id',
       //   runGuardsAndResolvers: "always",

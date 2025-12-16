@@ -45,6 +45,11 @@ export class SupabaseService {
     return this.user;
   }
 
+  async getAllUsers() {
+    let data = await this.supabase.from('profiles').select('*');
+    return data;
+  }
+
   profile(user: User) {
     let data = this.supabase.from('profiles').select(`username, vault_manager, avatar_url, admin`).eq('id', user.id).single();
     return data;
@@ -203,8 +208,11 @@ export class SupabaseService {
 
   // Get all workers with codes currently in progress
   async getCurrentWorkers() {
-    let data = await this.supabase.from(this.workersTable).select('*, VaultCode!inner()').eq('VaultCode.status', 'in-progress');
-    return data;
+    let data = await this.supabase
+      .from(this.workersTable)
+      .select('*, ' + this.vaultCodeTable + '!inner()')
+      .eq(this.vaultCodeTable + '.status', 'in-progress');
+    return data as any;
   }
 
   // Get all workers
