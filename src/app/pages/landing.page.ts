@@ -3,7 +3,7 @@ import { CodeService } from '../services/code-service';
 import { Profile, SupabaseService } from '../services/supabase.service';
 import { AuthComponent } from '../pages/user/auth';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthSession, User } from '@supabase/supabase-js';
 import { AccountComponent } from './user/account';
 import { VaultCode } from '../../models/vault-code';
@@ -12,7 +12,7 @@ import { ActivitySwitcher } from '../components/activity-switcher/activity-switc
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.page.html',
-  imports: [CommonModule, ActivitySwitcher, AuthComponent],
+  imports: [CommonModule, ActivitySwitcher, AuthComponent, RouterLink, RouterLinkActive],
   standalone: true,
 })
 export class Landing {
@@ -67,12 +67,6 @@ export class Landing {
       alert(error.message);
     } finally {
     }
-  }
-
-  generateCodes() {
-    this.supabase.getCurrentWorkers().then((res) => {
-      console.log();
-    });
   }
 
   logout() {

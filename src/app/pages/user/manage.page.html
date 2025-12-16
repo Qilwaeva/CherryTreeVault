@@ -1,0 +1,53 @@
+<div class="w-full">
+  <div class="grid grid-cols-1 mt-8 mx-4">
+    <div class="col-span-1">
+      <div class="text-lg text-center font-bold">Manage Existing Users</div>
+      <div class="text-center">Click user to edit</div>
+      <table class="table-auto border border-collapse mx-auto">
+        <thead>
+          <tr>
+            <th class="p-1 border">Username</th>
+            <th class="p-1 border">Admin?</th>
+            <th class="p-1 border">Vault Manager?</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of allUsers(); track user.id) {
+          <tr class="cursor-pointer" (click)="selectUser(user)">
+            <td class="p-1 border">{{user.username}}</td>
+            <td class="p-1 border">{{user.admin}}</td>
+            <td class="p-1 border">{{user.vault_manager}}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<dialog #manageUser class="modal">
+  <div class="modal-box max-w-screen-md contain-style flex flex-col">
+    <div class="text-center text-lg">Update {{selectedUser?.username}}</div>
+    <div class="flex row"></div>
+    <button
+      class="flex btn mx-auto my-3 bg-primary text-primary-content hover:bg-secondary hover:text-secondary-content"
+      type="button"
+      (click)="giveVaultMgr()"
+    >
+      Make Vault Manager
+    </button>
+    <button
+      class="flex btn mx-auto my-3 bg-error text-error-content hover:bg-error hover:text-error-content"
+      type="button"
+      (click)="removeVaultMgr()"
+    >
+      Remove Vault Manager
+    </button>
+    @if (confirmation().length > 0) {
+    <div class="text-center">{{confirmation()}}</div>
+    }
+    <div class="modal-action flex">
+      <!-- buttons to close modal -->
+      <button class="btn" (click)="manageUserModal().nativeElement.close()">Close</button>
+    </div>
+  </div>
+</dialog>

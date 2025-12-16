@@ -1,6 +1,11 @@
 @if (profile()) {
 <div class="px-4 py-8">
-  <button class="flex btn ml-auto" type="button" (click)="logout()">Logout</button>
+  <div class="flex row">
+    @if (profile()?.admin) {
+    <button class="flex btn mr-auto" type="button" routerLink="/manage-users" routerLinkActive="['active']">Manage Users</button>
+    }
+    <button class="flex btn ml-auto" type="button" (click)="logout()">Logout</button>
+  </div>
   <div class="flex w-full justify-center">
     <div class="flex items-center justify-center">Welcome to CherryTree Vault Cracking!</div>
   </div>

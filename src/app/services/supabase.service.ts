@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { AuthChangeEvent, AuthSession, createClient, Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 import { VaultCode } from '../../models/vault-code';
-import { CurrencyPipe } from '@angular/common';
-import { getConfig } from '../../config/config';
 
 export interface Profile {
   id?: string;
@@ -45,6 +43,11 @@ export class SupabaseService {
       this.user = data.user;
     });
     return this.user;
+  }
+
+  async getAllUsers() {
+    let data = await this.supabase.from('profiles').select('*');
+    return data;
   }
 
   profile(user: User) {
@@ -205,8 +208,11 @@ export class SupabaseService {
 
   // Get all workers with codes currently in progress
   async getCurrentWorkers() {
-    let data = await this.supabase.from(this.workersTable).select('*, VaultCode!inner()').eq('VaultCode.status', 'in-progress');
-    return data;
+    let data = await this.supabase
+      .from(this.workersTable)
+      .select('*, ' + this.vaultCodeTable + '!inner()')
+      .eq(this.vaultCodeTable + '.status', 'in-progress');
+    return data as any;
   }
 
   // Get all workers
