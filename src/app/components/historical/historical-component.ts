@@ -30,7 +30,6 @@ export class HistoricalComponent {
     this.getLastVaultWorkers();
   }
 
-  // TODO add loading
   getAllWorkers() {
     this.loading = true;
     this.supabase

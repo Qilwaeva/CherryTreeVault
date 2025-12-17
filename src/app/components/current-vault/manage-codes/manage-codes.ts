@@ -17,12 +17,9 @@ import { Worker } from '../../../../models/worker';
 export class ManageCodes {
   user = input.required<User | null>();
   profile = input.required<Profile | null>();
-  refresh = input.required<boolean>();
-  _refresh = linkedSignal(() => this.refresh());
-  refreshOutput = output<boolean>();
+  currentWorkers = input.required<Worker[]>();
   checkActive = output();
 
-  currentWorkers = signal<Worker[]>([]);
   selectedWorker?: Worker;
   workerTasks = signal<VaultCode[]>([]);
   tasksLoading = false;
@@ -40,33 +37,15 @@ export class ManageCodes {
     private readonly codeService: CodeService,
     private readonly supabase: SupabaseService,
     private readonly formBuilder: FormBuilder
-  ) {
-    effect(() => {
-      if (this.refresh()) {
-        this.getActiveWorkers();
-      }
-    });
-  }
+  ) {}
 
   ngOnInit() {
-    this.getActiveWorkers();
-
     this.formatCodesForm = this.formBuilder.group({
       grouping: 0,
       formatting: 'None',
     });
     this.validateCodeForm = this.formBuilder.group({
       code: '',
-    });
-  }
-
-  getActiveWorkers() {
-    this.supabase.getCurrentWorkers().then((res) => {
-      if (res.data != null && res.data.length > 0) {
-        this.currentWorkers.set(res.data);
-        this._refresh.set(false);
-        this.refreshOutput.emit(this._refresh());
-      }
     });
   }
 
@@ -146,6 +125,6 @@ export class ManageCodes {
     this.codeService.updateCodeStatus(this.workerTasks(), 'invalid');
     this.workerTasks.set([]);
     this.manageWorkerCodesModal().nativeElement.close();
-    this.getActiveWorkers();
+    this.checkActive.emit();
   }
 }

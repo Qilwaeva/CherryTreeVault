@@ -16,20 +16,25 @@
       <input type="radio" name="my-accordion-3" checked="checked" />
       <div class="collapse-title font-semibold text-center text-info-content">Assign Codes</div>
       <div class="collapse-content text-sm">
-        <assign-codes class="" [user]="user()" [profile]="profile()" (checkActive)="checkActiveVault()"></assign-codes>
+        <assign-codes
+          class=""
+          [user]="user()"
+          [profile]="profile()"
+          [allWorkers]="allWorkers()"
+          (checkActive)="getActiveWorkers(); checkActiveVault(); getAllWorkers()"
+        ></assign-codes>
       </div>
     </div>
     <div class="collapse collapse-plus bg-base-100 border-base-300 border-2">
-      <input type="radio" name="my-accordion-3" checked="checked" />
+      <input type="radio" name="my-accordion-3" />
       <div class="collapse-title font-semibold text-center text-info-content">Manage Existing Codes</div>
       <div class="collapse-content text-sm">
         <manage-codes
           class=""
           [user]="user()"
           [profile]="profile()"
-          [refresh]="refresh()"
-          (checkActive)="checkActiveVault()"
-          (refreshOutput)="this.refresh.set($event)"
+          [currentWorkers]="currentWorkers()"
+          (checkActive)="getActiveWorkers(); checkActiveVault(); getAllWorkers()"
         ></manage-codes>
       </div>
     </div>
