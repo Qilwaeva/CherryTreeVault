@@ -7,6 +7,7 @@ import { Profile, SupabaseService } from '../../../services/supabase.service';
 import { AuthSession, User } from '@supabase/supabase-js';
 import { VaultCode } from '../../../../models/vault-code';
 import { CodeForm } from '../../../../models/code-form';
+import { Worker } from '../../../../models/worker';
 
 @Component({
   selector: 'assign-codes',
@@ -19,9 +20,11 @@ export class AssignCodes {
   profile = input.required<Profile | null>();
 
   formatKeys = ['None', 'Underlined', 'Bold'];
-  refresh = signal<boolean>(false);
+  allWorkers = input.required<Worker[]>();
+  checkActive = output();
 
   assignCodesForm!: FormGroup;
+  workerDropdown = signal<string>('');
 
   submitLoading = false;
   requestForm: CodeForm = {
@@ -43,9 +46,10 @@ export class AssignCodes {
 
   ngOnInit() {
     this.assignCodesForm = this.formBuilder.group({
+      userdropdown: '',
       username: '',
-      quantity: 0,
-      grouping: 0,
+      quantity: '',
+      grouping: '',
       formatting: 'None',
     });
   }
@@ -54,10 +58,18 @@ export class AssignCodes {
     this.requestForm.formatting = event.target.value;
   }
 
+  changeWorker(event: any) {
+    this.workerDropdown.set(event.target.value);
+  }
+
   async onSubmitRequest(): Promise<void> {
     try {
       this.submitLoading = true;
-      this.requestForm.worker = this.assignCodesForm.value.username as string;
+      if (this.workerDropdown() === 'New Worker') {
+        this.requestForm.worker = this.assignCodesForm.value.username as string;
+      } else {
+        this.requestForm.worker = this.workerDropdown() as string;
+      }
       this.requestForm.totalCodes = this.assignCodesForm.value.quantity as number;
       this.requestForm.grouping = this.assignCodesForm.value.grouping as number;
       await this.validateValues();
@@ -69,7 +81,8 @@ export class AssignCodes {
     } finally {
       if (this.submitValid) {
         this.requestCodes();
-        this.assignCodesForm.reset();
+        // this.assignCodesForm.reset();
+        this.reset();
       }
       this.submitLoading = false;
     }
@@ -102,12 +115,23 @@ export class AssignCodes {
       this.assignedCodes = res;
       if (this.requestForm.totalCodes > this.requestForm.grouping) {
         this.copyableCodes.set(this.codeService.formatCodes(this.assignedCodes, this.requestForm.formatting, this.requestForm.grouping));
-        this.refresh.set(true);
+
+        this.checkActive.emit();
       }
     });
   }
 
   discordFormat() {
     navigator.clipboard.writeText(this.codeService.discordFormat(this.copyableCodes()));
+  }
+
+  reset() {
+    this.assignCodesForm = this.formBuilder.group({
+      userdropdown: '',
+      username: '',
+      quantity: '',
+      grouping: '',
+      formatting: 'None',
+    });
   }
 }

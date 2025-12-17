@@ -2,7 +2,7 @@
   <form [formGroup]="assignCodesForm" class="form-widget">
     <div class="flex justify-center">
       <div>
-        <div class="flex row py-1">
+        <!-- <div class="flex row py-1">
           <div class="flex items-center pr-2">
             <label for="username">Name:</label>
           </div>
@@ -13,7 +13,33 @@
             class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
             placeholder="Worker Name"
           />
+        </div> -->
+        <div class="flex row py-1">
+          <div class="flex items-center pr-2">
+            <label for="formatting">Worker Name:</label>
+          </div>
+          <select
+            id="userdropdown"
+            formControlName="userdropdown"
+            class="select select-bordered border-base-content bg-base-200 text-base-content w-48 ml-auto"
+            (change)="changeWorker($event)"
+          >
+            <option selected disabled value="">Select Worker</option>
+            <option>New Worker</option>
+            <option *ngFor="let worker of allWorkers()">{{worker.username}}</option>
+          </select>
         </div>
+        @if (workerDropdown() === 'New Worker') {
+        <div class="flex row py-1">
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            placeholder="Worker Name"
+          />
+        </div>
+        }
         <div class="flex row py-1">
           <div class="flex items-center pr-2">
             <label for="quantity">Number of Codes:</label>

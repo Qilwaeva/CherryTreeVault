@@ -11,6 +11,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { ManageCodes } from './manage-codes/manage-codes';
 import { VaultForm } from '../../../models/vault-form';
 import { AssignCodes } from './assign-codes/assign-codes';
+import { Worker } from '../../../models/worker';
 
 @Component({
   selector: 'current-component',
@@ -24,7 +25,8 @@ export class CurrentComponent {
 
   vaultActive = signal<boolean>(false);
   vaultName = signal<string>('');
-  refresh = signal<boolean>(false);
+  currentWorkers = signal<Worker[]>([]);
+  allWorkers = signal<Worker[]>([]);
 
   totalCodes = signal<number>(0);
   testedCodes = signal<number>(0);
@@ -44,12 +46,13 @@ export class CurrentComponent {
 
   ngOnInit() {
     this.checkActiveVault();
+    this.getActiveWorkers();
+    this.getAllWorkers();
     this.vaultForm = this.formBuilder.group({
       vaultName: '',
       totalDigits: 0,
       excludeDigits: [],
     });
-    // this.vaultActive = true;
   }
 
   checkActiveVault() {
@@ -87,5 +90,21 @@ export class CurrentComponent {
       this.generateLoading = false;
       this.checkActiveVault();
     }
+  }
+
+  getActiveWorkers() {
+    this.supabase.getCurrentWorkers().then((res) => {
+      if (res.data != null && res.data.length > 0) {
+        this.currentWorkers.set(res.data);
+      }
+    });
+  }
+
+  getAllWorkers() {
+    this.supabase.getAllWorkers().then((res) => {
+      if (res.data != null && res.data.length > 0) {
+        this.allWorkers.set(res.data);
+      }
+    });
   }
 }
