@@ -29,11 +29,13 @@ export class CodeService {
         }
       }
 
-      // Confirm number contains all of the valid digits
-      for (let digit of validDigits) {
-        if (!currentCode.includes(digit)) {
-          valid = false;
-          break;
+      if (valid) {
+        // Confirm number contains all of the valid digits
+        for (let digit of validDigits) {
+          if (!currentCode.includes(digit)) {
+            valid = false;
+            break;
+          }
         }
       }
       if (valid) {
