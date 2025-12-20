@@ -35,13 +35,26 @@
   <div class="modal-box max-w-screen-md contain-style flex flex-col">
     <div class="collapse-title font-semibold text-center text-info-content">Manage Codes for {{selectedWorker?.username}}</div>
     <div class="flex row">
-      <button class="flex btn btn-md bg-error text-error-content border-error-content m-1 text-sm" (click)="markInvalid()">
+      <button
+        class="flex btn btn-md bg-error text-error-content border-error-content m-1 text-sm hover:bg-error/60"
+        (click)="markInvalid()"
+      >
         Mark All Invalid
       </button>
-      <!-- <button class="flex btn btn-xs bg-error text-error-content border-error-content m-1 text-sm">Mark Some Invalid</button> -->
-      <!-- <button class="flex btn btn-xs bg-base-100 text-base-content border-base-content m-1 text-sm">Unassign</button> -->
+      <button
+        class="flex btn btn-md bg-error text-error-content border-error-content m-1 text-sm hover:bg-error/60"
+        (click)="prepInvalidList()"
+      >
+        Mark SOME Invalid
+      </button>
+      <button
+        class="flex btn btn-md bg-warning text-warning-content border-warning-content m-1 text-sm hover:bg-warning/60"
+        (click)="unassignCodes()"
+      >
+        Unassign All
+      </button>
     </div>
-    There will be unassign and mark some as invalid options in MVP +1 @if (copyableCodes().length > 0) {
+    @if (copyableCodes().length > 0) {
     <div class="grid grid-cols-2">
       <div class="flex justify-center py-3 col-span-1">
         <div class="flex border border-base-content rounded-md py-2 px-4">
@@ -90,6 +103,40 @@
     <div class="modal-action flex">
       <!-- buttons to close modal -->
       <button class="btn" (click)="manageWorkerCodesModal().nativeElement.close()">Close</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #invalidList class="modal">
+  <div class="modal-box max-w-screen-md contain-style flex flex-col">
+    <div class="collapse-title font-semibold text-center text-info-content">Manage Codes for {{selectedWorker?.username}}</div>
+
+    <div class="grid grid-cols-2">
+      <div class="flex justify-center py-3 col-span-1">
+        <div class="border border-base-content rounded-md py-2 px-4">
+          <div class="flex row">
+            <input type="checkbox" class="m-1" [checked]="selectAll" (change)="selectAllInvalid()" /> Select/Deselect All
+          </div>
+          <div *ngFor="let task of invalidCodeList">
+            <div class="flex row">
+              <input type="checkbox" class="m-1" [checked]="task.checked" (change)="checkItem(task)" /> {{task.code.code}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-center py-3 col-span-1">
+        <button
+          class="flex btn btn-md bg-error text-error-content border-error-content m-1 text-sm hover:bg-error/60"
+          (click)="setCheckedInvalid()"
+        >
+          Mark Checked Invalid
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-action flex">
+      <!-- buttons to close modal -->
+      <button class="btn" (click)="invalidListModal().nativeElement.close()">Close</button>
     </div>
   </div>
 </dialog>

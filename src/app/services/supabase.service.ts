@@ -166,6 +166,22 @@ export class SupabaseService {
     return data;
   }
 
+  async unassignCodes(codes: VaultCode[]) {
+    let data = await this.supabase
+      .from(this.vaultCodeTable)
+      .update([
+        {
+          assignee: null,
+        },
+      ])
+      .eq('vaultName', codes[0].vaultName)
+      .in(
+        'code',
+        codes.map((c) => c.code)
+      );
+    return data;
+  }
+
   async setStatus(codes: VaultCode[], status: 'valid' | 'invalid' | 'in-progress') {
     let data = await this.supabase
       .from(this.vaultCodeTable)

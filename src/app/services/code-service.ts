@@ -90,6 +90,10 @@ export class CodeService {
     });
   }
 
+  async unassignCodes(codes: VaultCode[]) {
+    await this.supabase.unassignCodes(codes);
+  }
+
   // For the first admin validation, just mark them down
   // For the second validation, mark valid and everything else invalid
   async markCodeValidated(code: VaultCode, vaultMgr: string) {
