@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, effect, ElementRef, input, linkedSignal, output, signal, viewChild, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { CodeService } from '../../../services/code-service';
@@ -7,6 +7,11 @@ import { Profile, SupabaseService } from '../../../services/supabase.service';
 import { AuthSession, User } from '@supabase/supabase-js';
 import { VaultCode } from '../../../../models/vault-code';
 import { Worker } from '../../../../models/worker';
+
+interface InvalidList {
+  code: VaultCode;
+  checked: boolean;
+}
 
 @Component({
   selector: 'manage-codes',
@@ -27,11 +32,16 @@ export class ManageCodes {
   formatKeys = ['None', 'Underlined', 'Bold'];
   formatting = 'None';
   formatCodesForm!: FormGroup;
+
   validateCodeForm!: FormGroup;
   validateError = signal<string>('');
   validateFeedback = signal<string>('');
 
+  invalidCodeList: InvalidList[] = [];
+  selectAll = false;
+
   manageWorkerCodesModal = viewChild.required<ElementRef<HTMLDialogElement>>('manageWorkerCodes');
+  invalidListModal = viewChild.required<ElementRef<HTMLDialogElement>>('invalidList');
 
   constructor(
     private readonly codeService: CodeService,
@@ -126,5 +136,46 @@ export class ManageCodes {
     this.workerTasks.set([]);
     this.manageWorkerCodesModal().nativeElement.close();
     this.checkActive.emit();
+  }
+
+  unassignCodes() {
+    this.codeService.unassignCodes(this.workerTasks()).then(() => {
+      this.manageWorkerCodesModal().nativeElement.close();
+      this.checkActive.emit();
+    });
+  }
+
+  prepInvalidList() {
+    this.invalidCodeList = this.workerTasks().map((code: VaultCode) => ({
+      code: code,
+      checked: false,
+    }));
+    this.invalidListModal().nativeElement.showModal();
+  }
+
+  selectAllInvalid() {
+    this.selectAll = !this.selectAll;
+    if (this.selectAll) {
+      this.invalidCodeList = this.invalidCodeList.map((item: InvalidList) => ({ ...item, checked: true }));
+    } else {
+      this.invalidCodeList = this.invalidCodeList.map((item: InvalidList) => ({ ...item, checked: false }));
+    }
+  }
+
+  checkItem(list: InvalidList) {
+    this.invalidCodeList.find((task) => task.code === list.code)!.checked = !list.checked;
+  }
+
+  setCheckedInvalid() {
+    let checked = this.invalidCodeList.filter((list) => list.checked == true);
+    this.codeService
+      .updateCodeStatus(
+        checked.map((list) => list.code),
+        'invalid'
+      )
+      .then(() => {
+        this.getWorkerCodes(this.selectedWorker!);
+        this.invalidListModal().nativeElement.close();
+      });
   }
 }
