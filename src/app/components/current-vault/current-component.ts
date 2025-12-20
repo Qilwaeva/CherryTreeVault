@@ -78,8 +78,8 @@ export class CurrentComponent {
       this.generateLoading = true;
       let vaultName = this.vaultForm.value.vaultName as string;
       let totalDigits = this.vaultForm.value.totalDigits as number;
-      let excludeNum = this.vaultForm.value.excludeDigits as number;
-      let excludeDigits = excludeNum.toString().split('');
+      let excludeNum = this.vaultForm.value.excludeDigits as string;
+      let excludeDigits = excludeNum.split('');
       let generate = await this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName);
     } catch (error) {
       if (error instanceof Error) {
