@@ -10,6 +10,7 @@ export class CodeService {
 
   // Generate all the codes we want to test
   async generateAllCodes(excludeDigits: string[], codeLength: number, vaultName: string): Promise<number> {
+    let validDigits = this.getValidDigits(excludeDigits);
     var startingCode = '';
     // Get initial all 0s code
     for (let i = 0; i < codeLength; i++) {
@@ -28,6 +29,13 @@ export class CodeService {
         }
       }
 
+      // Confirm number contains all of the valid digits
+      for (let digit of validDigits) {
+        if (!currentCode.includes(digit)) {
+          valid = false;
+          break;
+        }
+      }
       if (valid) {
         validCodes.push({
           // id: '',
@@ -47,6 +55,16 @@ export class CodeService {
     let vaultConfirm = await this.supabase.createNewVault(vaultName);
 
     return validCodes.length;
+  }
+
+  getValidDigits(excludeDigits: string[]) {
+    let validDigits = [];
+    for (let i = 0; i < 10; i++) {
+      if (!excludeDigits.includes(i.toString())) {
+        validDigits.push(i.toString());
+      }
+    }
+    return validDigits;
   }
 
   // Don't want to lose leading zeroes when converting
