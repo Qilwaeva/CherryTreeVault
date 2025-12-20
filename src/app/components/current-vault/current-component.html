@@ -2,10 +2,14 @@
 <div class="w-full">
   <div class="text-center">
     <div>Vault Name: {{vaultName()}}</div>
-    <div>Tested Codes: {{testedCodes()}}</div>
-    <div>Assigned Codes: {{totalAssignedCodes()}}</div>
-    <div>Remaining Codes: {{remainingCodes()}} - ({{remainingCodes() / totalCodes() *100}}%)</div>
-    <div>Total Codes: {{totalCodes()}}</div>
+    <div class="grid sm:grid-cols-2 sm:w-1/2 mx-auto">
+      <div>Excluded Digits: {{vaultData()?.exclude_digits}}</div>
+      <div>Digits in Code: {{vaultData()?.code_count}}</div>
+      <div>Tested Codes: {{testedCodes()}}</div>
+      <div>Assigned Codes: {{totalAssignedCodes()}}</div>
+      <div>Remaining Codes: {{remainingCodes()}} - ({{remainingCodes() / totalCodes() *100}}%)</div>
+      <div>Total Codes: {{totalCodes()}}</div>
+    </div>
   </div>
 </div>
 }

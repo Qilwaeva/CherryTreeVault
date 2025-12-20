@@ -12,6 +12,7 @@ import { ManageCodes } from './manage-codes/manage-codes';
 import { VaultForm } from '../../../models/vault-form';
 import { AssignCodes } from './assign-codes/assign-codes';
 import { Worker } from '../../../models/worker';
+import { Vault } from '../../../models/vault';
 
 @Component({
   selector: 'current-component',
@@ -32,6 +33,7 @@ export class CurrentComponent {
   testedCodes = signal<number>(0);
   totalAssignedCodes = signal<number>(0);
   remainingCodes = signal<number>(0);
+  vaultData = signal<Vault | null>(null);
 
   assignCodesForm!: FormGroup;
   vaultForm!: FormGroup;
@@ -68,6 +70,7 @@ export class CurrentComponent {
           this.testedCodes.set(stats.invalid);
           this.totalAssignedCodes.set(stats.assigned);
           this.remainingCodes.set(stats.remaining);
+          this.vaultData.set(stats.vaultData.data);
         });
       }
     });
