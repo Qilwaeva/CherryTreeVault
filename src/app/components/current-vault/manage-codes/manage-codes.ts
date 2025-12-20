@@ -67,8 +67,8 @@ export class ManageCodes {
   }
 
   getWorkerCodes(worker: Worker) {
-    this.supabase
-      .getCodesByWorker(worker.username, 'in-progress')
+    this.codeService
+      .getWorkerCodes(worker.username)
       .then((codeRes) => {
         if (codeRes != null && codeRes.length > 0) {
           this.workerTasks.set(codeRes);
@@ -90,13 +90,13 @@ export class ManageCodes {
     this.supabase.getSetting('active_vault').then((res) => {
       if (res) {
         vaultName = res;
-        this.supabase.getCodebyCode(code, vaultName).then((vCode) => {
+        this.codeService.getCodeByCode(code, vaultName).then((vCode) => {
           if (vCode == null) {
             this.validateError.set('This is not a valid code for the current vault, please resubmit');
           } else {
             let vaultCode = vCode;
             // Give user credit for all the codes they tried before the successful one
-            this.supabase.getCodesByWorker(vaultCode.assignee, 'in-progress').then((codeRes) => {
+            this.codeService.getWorkerCodes(vaultCode.assignee).then((codeRes) => {
               if (codeRes != null && codeRes.length > 0) {
                 let codeIndex = codeRes.findIndex((c: VaultCode) => c.code === vaultCode.code);
                 let attemptedCodes = codeRes.splice(0, codeIndex);

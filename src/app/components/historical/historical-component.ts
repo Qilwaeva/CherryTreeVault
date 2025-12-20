@@ -81,7 +81,7 @@ export class HistoricalComponent {
   }
 
   async getWorkerCodeCount(username: string, status: string) {
-    let count = await this.supabase.getCodeCountByWorker(username, status);
+    let count = await this.codeService.getWorkerCodeCount(username, status);
     return count;
   }
 }
