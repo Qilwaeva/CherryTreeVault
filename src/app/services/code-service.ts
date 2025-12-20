@@ -9,7 +9,7 @@ export class CodeService {
   ngOnInit() {}
 
   // Generate all the codes we want to test
-  async generateAllCodes(excludeDigits: string[], codeLength: number, vaultName: string) {
+  async generateAllCodes(excludeDigits: string[], codeLength: number, vaultName: string): Promise<number> {
     var startingCode = '';
     // Get initial all 0s code
     for (let i = 0; i < codeLength; i++) {
@@ -45,6 +45,8 @@ export class CodeService {
 
     let codeWait = await this.supabase.insertCodes(validCodes);
     let vaultConfirm = await this.supabase.createNewVault(vaultName);
+
+    return validCodes.length;
   }
 
   // Don't want to lose leading zeroes when converting
