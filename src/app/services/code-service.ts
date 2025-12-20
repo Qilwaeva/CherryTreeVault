@@ -195,4 +195,19 @@ export class CodeService {
     discordMd = discordMd.replaceAll(brRegex, '\r\n');
     return discordMd;
   }
+
+  async getWorkerCodes(worker: string): Promise<VaultCode[]> {
+    let codes = await this.supabase.getCodesByWorker(worker, 'in-progress');
+    return codes!;
+  }
+
+  async getCodeByCode(code: string, vaultName: string) {
+    let vaultCode = await this.supabase.getCodebyCode(code, vaultName);
+    return vaultCode;
+  }
+
+  async getWorkerCodeCount(username: string, status: string) {
+    let count = await this.supabase.getCodeCountByWorker(username, status);
+    return count;
+  }
 }

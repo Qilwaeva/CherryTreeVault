@@ -334,7 +334,14 @@ export class SupabaseService {
       .select('*', { count: 'exact', head: true })
       .eq('vaultName', vaultName)
       .eq('status', 'not-started');
-    return { total: dataTotal.count, invalid: dataInvalid.count, assigned: dataAssigned.count, remaining: dataRemaining.count };
+    let vaultData = await this.supabase.from(this.vaultsTable).select('*').eq('vault_name', vaultName).single();
+    return {
+      total: dataTotal.count,
+      invalid: dataInvalid.count,
+      assigned: dataAssigned.count,
+      remaining: dataRemaining.count,
+      vaultData: vaultData,
+    };
   }
 
   async closeVault() {

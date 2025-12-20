@@ -93,7 +93,7 @@ export class AssignCodes {
       this.validationError = 'Worker name must be at least 1 character';
       this.submitValid = false;
     } else {
-      await this.supabase.getCodesByWorker(this.requestForm.worker, 'in-progress').then((codes) => {
+      await this.codeService.getWorkerCodes(this.requestForm.worker).then((codes) => {
         if (codes != null && codes.length > 0) {
           this.validationError = 'This worker already has codes assigned';
           this.submitValid = false;
