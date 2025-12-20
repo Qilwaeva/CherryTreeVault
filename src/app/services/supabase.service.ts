@@ -21,6 +21,7 @@ export class SupabaseService {
   vaultCodeTable = '';
   settingsTable = '';
   workersTable = '';
+  vaultsTable = '';
   baseUrl = '';
 
   constructor() {
@@ -28,6 +29,7 @@ export class SupabaseService {
     this.vaultCodeTable = environment.code_table_name;
     this.settingsTable = environment.settings_table_name;
     this.workersTable = environment.workers_table_name;
+    this.vaultsTable = environment.vault_table_name;
     this.baseUrl = environment.api.base;
   }
 
@@ -131,6 +133,16 @@ export class SupabaseService {
 
   uploadAvatar(filePath: string, file: File) {
     return this.supabase.storage.from('avatars').upload(filePath, file);
+  }
+
+  async createVault(vaultName: string, createdBy: string, excludeDigits: string, codeCount: number) {
+    await this.supabase
+      .from(this.vaultsTable)
+      .insert([{ vault_name: vaultName, created_by: createdBy, exclude_digits: excludeDigits, code_count: codeCount }])
+      .select()
+      .then(({ data }) => {
+        return data;
+      });
   }
 
   async insertCodes(codes: VaultCode[]) {

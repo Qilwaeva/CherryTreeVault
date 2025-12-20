@@ -81,6 +81,7 @@ export class CurrentComponent {
       let excludeNum = this.vaultForm.value.excludeDigits as string;
       let excludeDigits = excludeNum.split('');
       let generate = await this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName);
+      await this.supabase.createVault(vaultName, this.profile()!.username, excludeNum, generate);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
