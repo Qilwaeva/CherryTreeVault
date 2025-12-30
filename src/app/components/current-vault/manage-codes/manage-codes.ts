@@ -95,19 +95,26 @@ export class ManageCodes {
             this.validateError.set('This is not a valid code for the current vault, please resubmit');
           } else {
             let vaultCode = vCode;
-            // Give user credit for all the codes they tried before the successful one
-            this.codeService.getWorkerCodes(vaultCode.assignee).then((codeRes) => {
-              if (codeRes != null && codeRes.length > 0) {
-                let codeIndex = codeRes.findIndex((c: VaultCode) => c.code === vaultCode.code);
-                let attemptedCodes = codeRes.splice(0, codeIndex);
-                this.codeService.updateCodeStatus(attemptedCodes, 'invalid');
+            if (vaultCode.assignee != null) {
+              // Give user credit for all the codes they tried before the successful one
+              this.codeService.getWorkerCodes(vaultCode.assignee).then((codeRes) => {
+                if (codeRes != null && codeRes.length > 0) {
+                  let codeIndex = codeRes.findIndex((c: VaultCode) => c.code === vaultCode.code);
+                  let attemptedCodes = codeRes.splice(0, codeIndex);
+                  this.codeService.updateCodeStatus(attemptedCodes, 'invalid');
 
-                this.codeService.markCodeValidated(vCode, this.profile()!.username).then((res) => {
-                  this.validateFeedback.set(res);
-                  this.checkActive.emit();
-                });
-              }
-            });
+                  this.codeService.markCodeValidated(vCode, this.profile()!.username).then((res) => {
+                    this.validateFeedback.set(res);
+                    this.checkActive.emit();
+                  });
+                }
+              });
+            } else {
+              this.codeService.markCodeValidated(vCode, this.profile()!.username).then((res) => {
+                this.validateFeedback.set(res);
+                this.checkActive.emit();
+              });
+            }
           }
         });
       }
