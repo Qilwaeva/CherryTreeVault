@@ -77,12 +77,16 @@ export class CurrentComponent {
   }
 
   async generateVault() {
+    this.generateLoading = true;
+    let vaultName = this.vaultForm.value.vaultName as string;
+    let totalDigits = this.vaultForm.value.totalDigits as number;
+    let excludeNum = this.vaultForm.value.excludeDigits as string;
+    let excludeDigits = excludeNum.split('');
+    this.generateCodes(excludeDigits, totalDigits, vaultName, excludeNum);
+  }
+
+  async generateCodes(excludeDigits: string[], totalDigits: number, vaultName: string, excludeNum: string) {
     try {
-      this.generateLoading = true;
-      let vaultName = this.vaultForm.value.vaultName as string;
-      let totalDigits = this.vaultForm.value.totalDigits as number;
-      let excludeNum = this.vaultForm.value.excludeDigits as string;
-      let excludeDigits = excludeNum.split('');
       let generate = await this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName);
       await this.supabase.createVault(vaultName, this.profile()!.username, excludeNum, generate);
     } catch (error) {
