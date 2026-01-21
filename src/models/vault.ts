@@ -4,4 +4,5 @@ export type Vault = {
   created_by: string;
   code_count: number;
   exclude_digits: string;
+  code_length: number;
 };
