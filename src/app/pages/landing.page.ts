@@ -1,18 +1,15 @@
 import { Component, signal } from '@angular/core';
 import { CodeService } from '../services/code-service';
 import { Profile, SupabaseService } from '../services/supabase.service';
-import { AuthComponent } from '../pages/user/auth';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { AuthSession, User } from '@supabase/supabase-js';
-import { AccountComponent } from './user/account';
-import { VaultCode } from '../../models/vault-code';
+import { User } from '@supabase/supabase-js';
 import { ActivitySwitcher } from '../components/activity-switcher/activity-switcher';
 
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.page.html',
-  imports: [CommonModule, ActivitySwitcher, AuthComponent, RouterLink, RouterLinkActive],
+  imports: [CommonModule, ActivitySwitcher, RouterLink, RouterLinkActive],
   standalone: true,
 })
 export class Landing {
@@ -47,6 +44,8 @@ export class Landing {
         this.user.set(this.supabase.user);
         if (this.user()) {
           this.getProfile();
+        } else {
+          this.router.navigate(['/login']);
         }
       }
     });
