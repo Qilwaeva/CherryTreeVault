@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Profile, SupabaseService } from '../../services/supabase.service';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -15,7 +15,8 @@ export class AuthComponent {
   signInForm!: FormGroup;
   constructor(
     private readonly supabase: SupabaseService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private router: Router
   ) {}
 
   loading = false;
@@ -77,7 +78,6 @@ export class AuthComponent {
       this.loading = true;
       const email = this.signInForm.value.email as string;
       const password = this.signInForm.value.password as string;
-      // const { error } = await this.supabase.signIn(email, profile);
       const { data, error } = await this.supabase.signInPass(email, password);
       console.log();
     } catch (error) {
@@ -87,6 +87,7 @@ export class AuthComponent {
     } finally {
       this.signUpForm.reset();
       this.loading = false;
+      this.router.navigate(['/home']);
     }
   }
 }
