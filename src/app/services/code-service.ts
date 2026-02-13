@@ -53,7 +53,12 @@ export class CodeService {
       currentCode = this.addLeadingZeroes(nextCode, startingCode);
     } while (currentCode.length == codeLength);
 
-    let codeWait = await this.supabase.insertCodes(validCodes);
+    let chunk = 10000;
+    do {
+      let submitCodes = validCodes.splice(0, chunk);
+      let codeWait = await this.supabase.insertCodes(submitCodes);
+    } while (validCodes.length > 0);
+
     let vaultConfirm = await this.supabase.createNewVault(vaultName);
 
     return validCodes.length;
