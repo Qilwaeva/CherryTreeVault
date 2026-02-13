@@ -62,7 +62,6 @@ export class AuthComponent {
       // const { error } = await this.supabase.signIn(email, profile);
       const { error } = await this.supabase.signUpPass(email, password, profile);
       if (error) throw error;
-      alert('Check your email to confirm!');
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);

@@ -41,7 +41,9 @@ export class Landing {
     this.supabase.authChanges((type, session) => {
       if (type != 'TOKEN_REFRESHED') {
         // don't need to go get the whole user again if only refreshing
-        this.user.set(this.supabase.user);
+        if (session) {
+          this.user.set(session.user);
+        }
         if (this.user()) {
           this.getProfile();
         } else {
