@@ -88,7 +88,7 @@ export class CurrentComponent {
   async generateCodes(excludeDigits: string[], totalDigits: number, vaultName: string, excludeNum: string) {
     try {
       let generate = await this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName);
-      await this.supabase.createVault(vaultName, this.profile()!.username, excludeNum, generate);
+      await this.supabase.createVault(vaultName, this.profile()!.username, excludeNum, totalDigits);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
