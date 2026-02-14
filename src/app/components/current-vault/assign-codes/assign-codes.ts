@@ -113,7 +113,7 @@ export class AssignCodes {
   requestCodes() {
     this.codeService.assignCodes(this.requestForm.worker, this.requestForm.totalCodes).then((res) => {
       this.assignedCodes = res;
-      if (this.requestForm.totalCodes > this.requestForm.grouping) {
+      if (this.requestForm.totalCodes >= this.requestForm.grouping) {
         this.copyableCodes.set(this.codeService.formatCodes(this.assignedCodes, this.requestForm.formatting, this.requestForm.grouping));
 
         this.checkActive.emit();
