@@ -184,6 +184,7 @@ export class SupabaseService {
       .update([
         {
           assignee: null,
+          status: 'not-started',
         },
       ])
       .eq('vaultName', codes[0].vaultName)
