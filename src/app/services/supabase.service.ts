@@ -328,7 +328,8 @@ export class SupabaseService {
       .from(this.vaultCodeTable)
       .select('*', { count: 'exact', head: true })
       .eq('vaultName', vaultName)
-      .eq('status', 'in-progress');
+      .eq('status', 'in-progress')
+      .neq('assignee', null);
     let dataRemaining = await this.supabase
       .from(this.vaultCodeTable)
       .select('*', { count: 'exact', head: true })
