@@ -246,7 +246,7 @@ export class SupabaseService {
 
   // Get all workers
   async getAllWorkers() {
-    let data = await this.supabase.from(this.workersTable).select('*');
+    let data = await this.supabase.from(this.workersTable).select('*').order('username', { ascending: true });
     return data;
   }
 
