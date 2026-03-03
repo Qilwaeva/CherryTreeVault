@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CodeService } from '../services/code-service';
 import { Profile, SupabaseService } from '../services/supabase.service';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { User } from '@supabase/supabase-js';
 import { ActivitySwitcher } from '../components/activity-switcher/activity-switcher';
 
