@@ -7,7 +7,7 @@
       <div>Digits in Code: {{vaultData()?.code_length}}</div>
       <div>Tested Codes: {{testedCodes()}}</div>
       <div>Assigned Codes: {{totalAssignedCodes()}}</div>
-      <div>Remaining Codes: {{remainingCodes()}} - ({{remainingCodes() / totalCodes() *100}}%)</div>
+      <div>Remaining Codes: {{remainingCodes()}} - ({{remainingCodes() / totalCodes() *100 | number:'1.0-2'}}%)</div>
       <div>Total Codes: {{vaultData()?.code_count}}</div>
     </div>
   </div>
