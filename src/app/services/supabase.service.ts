@@ -127,7 +127,11 @@ export class SupabaseService {
     return this.supabase.from('profiles').upsert(update);
   }
 
-  downLoadImage(path: string) {
+  removeProfile(profile: Profile) {
+    return this.supabase.from('profiles').delete().eq('id', profile.id);
+  }
+
+  downloadImage(path: string) {
     return this.supabase.storage.from('avatars').download(path);
   }
 
@@ -246,7 +250,7 @@ export class SupabaseService {
 
   // Get all workers
   async getAllWorkers() {
-    let data = await this.supabase.from(this.workersTable).select('*');
+    let data = await this.supabase.from(this.workersTable).select('*').order('username', { ascending: true });
     return data;
   }
 

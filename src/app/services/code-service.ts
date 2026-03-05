@@ -150,20 +150,16 @@ export class CodeService {
     let currentCode: VaultCode;
     let copyableCodes = '';
 
-    if (formatting != 'None') {
-      for (let j = 0; j < assignedCodes[0].code.length; j++) {
-        copyableCodes = copyableCodes + assignedCodes[0].code.at(j) + ' ';
-      }
-    } else {
-      copyableCodes = assignedCodes[0].code;
+    for (let j = 0; j < assignedCodes[0].code.length; j++) {
+      copyableCodes = copyableCodes + assignedCodes[0].code.at(j) + ' ';
     }
     // One less than total since we start with one loaded
     for (let i = 1; i < assignedCodes.length; i++) {
       currentCode = assignedCodes[i];
       let numberString = '<br>';
-      if (formatting != 'None') {
-        // Loop over numbers and apply any formatting
-        for (let j = 0; j < currentCode.code.length; j++) {
+      // Loop over numbers and apply any formatting
+      for (let j = 0; j < currentCode.code.length; j++) {
+        if (formatting != 'None') {
           if (lastCode.code.at(j) != currentCode.code.at(j)) {
             if (formatting == 'Bold') {
               numberString = numberString + '**' + currentCode.code.at(j) + '** ';
@@ -173,9 +169,9 @@ export class CodeService {
           } else {
             numberString = numberString + currentCode.code.at(j) + ' ';
           }
+        } else {
+          numberString = numberString + currentCode.code.at(j) + ' ';
         }
-      } else {
-        numberString = numberString + currentCode.code + ' ';
       }
 
       if (grouping != 0) {

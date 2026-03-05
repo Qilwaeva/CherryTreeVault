@@ -1,4 +1,10 @@
 <div class="w-full">
+  <div class="px-4 py-8">
+    <div class="flex row">
+      <button class="flex btn mr-auto" type="button" routerLink="/home" routerLinkActive="['active']">Home</button>
+      <button class="flex btn ml-auto" type="button" (click)="logout()">Logout</button>
+    </div>
+  </div>
   <div class="grid grid-cols-1 mt-8 mx-4">
     <div class="col-span-1">
       <div class="text-lg text-center font-bold">Manage Existing Users</div>
@@ -42,6 +48,13 @@
     >
       Remove Vault Manager
     </button>
+    <!-- <button
+      class="flex btn mx-auto my-3 bg-error text-error-content hover:bg-error hover:text-error-content"
+      type="button"
+      (click)="removeVaultMgr()"
+    >
+      Delete Vault Manager
+    </button> -->
     @if (confirmation().length > 0) {
     <div class="text-center">{{confirmation()}}</div>
     }
