@@ -248,6 +248,12 @@ export class SupabaseService {
     return data as any;
   }
 
+  // Get all workers with codes
+  async getTopCurrentWorkers() {
+    let data = await this.supabase.from('worker_stats').select('*').limit(20);
+    return data as any;
+  }
+
   // Get all workers
   async getAllWorkers() {
     let data = await this.supabase.from(this.workersTable).select('*').order('username', { ascending: true });

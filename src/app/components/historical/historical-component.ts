@@ -33,17 +33,16 @@ export class HistoricalComponent {
   getAllWorkers() {
     this.loading = true;
     this.supabase
-      .getAllWorkers()
+      .getTopCurrentWorkers()
       .then((res) => {
         if (res.data != null && res.data.length > 0) {
           this.allWorkers.set(res.data);
-          this.allWorkers().forEach(async (worker) => {
-            let invalidCount = await this.getWorkerCodeCount(worker.username, 'invalid');
-            let validCount = await this.getWorkerCodeCount(worker.username, 'valid');
+          res.data.forEach(async (workerStat: { id: any; username: any; invalid: any; valid: any }) => {
             let workerCode: WorkerCodes = {
-              worker: worker,
-              invalidCodes: invalidCount,
-              validCodes: validCount,
+              id: workerStat.id,
+              username: workerStat.username,
+              invalidCodes: workerStat.invalid,
+              validCodes: workerStat.valid,
             };
             this.allWorkerCodes.set([...this.allWorkerCodes(), workerCode]);
           });
