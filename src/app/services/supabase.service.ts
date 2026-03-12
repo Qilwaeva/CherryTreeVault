@@ -247,6 +247,13 @@ export class SupabaseService {
 
   // Get all workers with codes currently in progress
   async getCurrentWorkers() {
+    let data = await this.supabase.from(this.workersTable)
+      .select('*, ' + this.vaultCodeTable + '!inner()')
+      .eq(this.vaultCodeTable + '.status', 'in-progress');
+    return data as any;
+  }
+
+  async getCurrentVaultWorkers() {
     let data = await this.supabase.from(this.activeWorkerStatsTable).select('*').limit(20);
     return data as any;
   }
