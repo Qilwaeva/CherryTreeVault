@@ -83,7 +83,7 @@ export class HistoricalComponent {
 
   getCurrentVaultWorkers() {
     this.supabase
-      .getCurrentWorkers()
+      .getCurrentVaultWorkers()
       .then((res) => {
         if (res.data != null && res.data.length > 0) {
           this.currentWorkers.set(res.data);
