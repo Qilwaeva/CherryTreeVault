@@ -2,7 +2,8 @@ import { VaultCode } from './vault-code';
 import { Worker } from './worker';
 
 export interface WorkerCodes {
-  worker: Worker;
+  id: string;
+  username: string;
   invalidCodes: number;
   validCodes: number;
 }

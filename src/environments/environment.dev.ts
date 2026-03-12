@@ -6,6 +6,9 @@ export const environment = {
   settings_table_name: 'SettingsTest',
   workers_table_name: 'workersTest',
   vault_table_name: 'VaultsTest',
+  top_worker_stats: 'worker_test_stats',
+  last_worker_stats: 'last_worker_test_stats',
+  active_worker_stats: 'active_worker_test_stats',
   api: {
     base: 'http://localhost:4200',
   },
