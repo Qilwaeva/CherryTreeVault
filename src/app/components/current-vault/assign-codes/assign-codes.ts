@@ -37,6 +37,8 @@ export class AssignCodes {
   submitValid = true;
   assignedCodes: VaultCode[] = [];
   copyableCodes = signal<string>('');
+  hasCodesModal = viewChild.required<ElementRef<HTMLDialogElement>>('workerHasCodes');
+  numCodes = 0;
 
   constructor(
     private readonly codeService: CodeService,
@@ -81,7 +83,6 @@ export class AssignCodes {
     } finally {
       if (this.submitValid) {
         this.requestCodes();
-        // this.assignCodesForm.reset();
         this.reset();
       }
       this.submitLoading = false;
@@ -97,6 +98,8 @@ export class AssignCodes {
         if (codes != null && codes.length > 0) {
           this.validationError = 'This worker already has codes assigned';
           this.submitValid = false;
+          this.assignedCodes = codes;
+          this.hasCodesModal().nativeElement.showModal();
         }
       });
     }
@@ -108,6 +111,16 @@ export class AssignCodes {
       this.validationError = 'Grouping value must be between 1 and number of codes';
       this.submitValid = false;
     }
+  }
+
+  handleAssignedCodes(markInvalid: boolean) {
+    if (markInvalid) {
+      this.codeService.updateCodeStatus(this.assignedCodes, 'invalid');
+      this.requestCodes();
+      this.reset();
+    }
+    this.assignedCodes = [];
+    this.hasCodesModal().nativeElement.close();
   }
 
   requestCodes() {
@@ -133,5 +146,6 @@ export class AssignCodes {
       grouping: '',
       formatting: 'None',
     });
+    this.submitValid = true;
   }
 }
