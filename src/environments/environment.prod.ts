@@ -6,6 +6,9 @@ export const environment = {
   settings_table_name: 'Settings',
   workers_table_name: 'workers',
   vault_table_name: 'Vaults',
+  top_worker_stats: 'worker_stats',
+  last_worker_stats: 'last_worker_stats',
+  active_worker_stats: 'active_worker_stats',
   api: {
     base: 'https://cherrytreevault.pages.dev',
   },

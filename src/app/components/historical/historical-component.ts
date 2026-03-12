@@ -16,8 +16,10 @@ export class HistoricalComponent {
   allWorkers = signal<Worker[]>([]);
   currentWorkers = signal<Worker[]>([]);
   allWorkerCodes = signal<WorkerCodes[]>([]);
+  lastWorkerCodes = signal<WorkerCodes[]>([]);
   currentWorkerCodes = signal<WorkerCodes[]>([]);
   lastVaultName = signal<string>('');
+  currVaultName = signal<string>('');
 
   constructor(
     private readonly codeService: CodeService,
@@ -28,12 +30,13 @@ export class HistoricalComponent {
   ngOnInit() {
     this.getAllWorkers();
     this.getLastVaultWorkers();
+    this.getCurrentVaultWorkers();
   }
 
   getAllWorkers() {
     this.loading = true;
     this.supabase
-      .getTopCurrentWorkers()
+      .getTopWorkers()
       .then((res) => {
         if (res.data != null && res.data.length > 0) {
           this.allWorkers.set(res.data);
@@ -55,19 +58,18 @@ export class HistoricalComponent {
 
   getLastVaultWorkers() {
     this.supabase
-      .getCurrentWorkers()
+      .getLastVaultWorkers()
       .then((res) => {
         if (res.data != null && res.data.length > 0) {
           this.currentWorkers.set(res.data);
-          this.currentWorkers().forEach(async (worker) => {
-            let invalidCount = await this.getWorkerCodeCount(worker.username, 'invalid');
-            let validCount = await this.getWorkerCodeCount(worker.username, 'valid');
+          res.data.forEach(async (workerStat: { id: any; username: any; invalid: any; valid: any }) => {
             let workerCode: WorkerCodes = {
-              worker: worker,
-              invalidCodes: invalidCount,
-              validCodes: validCount,
+              id: workerStat.id,
+              username: workerStat.username,
+              invalidCodes: workerStat.invalid,
+              validCodes: workerStat.valid,
             };
-            this.currentWorkerCodes.set([...this.currentWorkerCodes(), workerCode]);
+            this.lastWorkerCodes.set([...this.lastWorkerCodes(), workerCode]);
           });
         }
       })
@@ -76,6 +78,31 @@ export class HistoricalComponent {
       });
     this.supabase.getSetting('last_vault').then((res) => {
       this.lastVaultName.set(res);
+    });
+  }
+
+  getCurrentVaultWorkers() {
+    this.supabase
+      .getCurrentWorkers()
+      .then((res) => {
+        if (res.data != null && res.data.length > 0) {
+          this.currentWorkers.set(res.data);
+          res.data.forEach(async (workerStat: { id: any; username: any; invalid: any; valid: any }) => {
+            let workerCode: WorkerCodes = {
+              id: workerStat.id,
+              username: workerStat.username,
+              invalidCodes: workerStat.invalid,
+              validCodes: workerStat.valid,
+            };
+            this.currentWorkerCodes.set([...this.currentWorkerCodes(), workerCode]);
+          });
+        }
+      })
+      .finally(() => {
+        this.loading = false;
+      });
+    this.supabase.getSetting('active_vault').then((res) => {
+      this.currVaultName.set(res);
     });
   }
 

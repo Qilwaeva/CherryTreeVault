@@ -22,6 +22,9 @@ export class SupabaseService {
   settingsTable = '';
   workersTable = '';
   vaultsTable = '';
+  workerStatsTable = '';
+  lastWorkerStatsTable = '';
+  activeWorkerStatsTable = '';
   baseUrl = '';
 
   constructor() {
@@ -30,6 +33,9 @@ export class SupabaseService {
     this.settingsTable = environment.settings_table_name;
     this.workersTable = environment.workers_table_name;
     this.vaultsTable = environment.vault_table_name;
+    this.workerStatsTable = environment.top_worker_stats;
+    this.lastWorkerStatsTable = environment.last_worker_stats;
+    this.activeWorkerStatsTable = environment.active_worker_stats;
     this.baseUrl = environment.api.base;
   }
 
@@ -241,16 +247,19 @@ export class SupabaseService {
 
   // Get all workers with codes currently in progress
   async getCurrentWorkers() {
-    let data = await this.supabase
-      .from(this.workersTable)
-      .select('*, ' + this.vaultCodeTable + '!inner()')
-      .eq(this.vaultCodeTable + '.status', 'in-progress');
+    let data = await this.supabase.from(this.activeWorkerStatsTable).select('*').limit(20);
+    return data as any;
+  }
+
+  // Get all workers with codes from previous vault
+  async getLastVaultWorkers() {
+    let data = await this.supabase.from(this.lastWorkerStatsTable).select('*').limit(20);
     return data as any;
   }
 
   // Get all workers with codes
-  async getTopCurrentWorkers() {
-    let data = await this.supabase.from('worker_stats').select('*').limit(20);
+  async getTopWorkers() {
+    let data = await this.supabase.from(this.workerStatsTable).select('*').limit(20);
     return data as any;
   }
 
