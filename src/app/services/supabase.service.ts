@@ -247,18 +247,19 @@ export class SupabaseService {
 
   // Get all workers with codes currently in progress
   async getCurrentWorkers() {
-    let data = await this.supabase.from(this.workersTable)
+    let data = await this.supabase
+      .from(this.workersTable)
       .select('*, ' + this.vaultCodeTable + '!inner()')
       .eq(this.vaultCodeTable + '.status', 'in-progress');
     return data as any;
   }
-
+  // Get top 20 workers with codes from current vault
   async getCurrentVaultWorkers() {
     let data = await this.supabase.from(this.activeWorkerStatsTable).select('*').limit(20);
     return data as any;
   }
 
-  // Get all workers with codes from previous vault
+  // Get top 20 workers with codes from previous vault
   async getLastVaultWorkers() {
     let data = await this.supabase.from(this.lastWorkerStatsTable).select('*').limit(20);
     return data as any;
