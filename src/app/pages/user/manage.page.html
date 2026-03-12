@@ -1,8 +1,15 @@
 <div class="w-full">
   <div class="px-4 py-8">
     <div class="flex row">
-      <button class="flex btn mr-auto" type="button" routerLink="/home" routerLinkActive="['active']">Home</button>
-      <button class="flex btn ml-auto" type="button" (click)="logout()">Logout</button>
+      <button
+        class="flex btn mr-auto border-base-content hover:border-base-content"
+        type="button"
+        routerLink="/home"
+        routerLinkActive="['active']"
+      >
+        Home
+      </button>
+      <button class="flex btn ml-auto border-base-content hover:border-base-content" type="button" (click)="logout()">Logout</button>
     </div>
   </div>
   <div class="grid grid-cols-1 mt-8 mx-4">
@@ -60,7 +67,7 @@
     }
     <div class="modal-action flex">
       <!-- buttons to close modal -->
-      <button class="btn" (click)="manageUserModal().nativeElement.close()">Close</button>
+      <button class="btn border-base-content hover:border-base-content" (click)="manageUserModal().nativeElement.close()">Close</button>
     </div>
   </div>
 </dialog>
