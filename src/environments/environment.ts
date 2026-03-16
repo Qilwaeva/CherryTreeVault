@@ -9,6 +9,7 @@ export const environment = {
   top_worker_stats: 'worker_test_stats',
   last_worker_stats: 'last_worker_test_stats',
   active_worker_stats: 'active_worker_test_stats',
+  hints_table_name: 'hints_provided_test',
   api: {
     base: 'http://localhost:4200',
   },

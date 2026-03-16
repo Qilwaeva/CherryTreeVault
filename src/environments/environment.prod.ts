@@ -9,6 +9,7 @@ export const environment = {
   top_worker_stats: 'worker_stats',
   last_worker_stats: 'last_worker_stats',
   active_worker_stats: 'active_worker_stats',
+  hints_table_name: 'hints_provided',
   api: {
     base: 'https://cherrytreevault.pages.dev',
   },

@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, effect, ElementRef, input, linkedSignal, output, signal, viewChild, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, output, signal, viewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { CodeService } from '../../../services/code-service';
-import { Profile, SupabaseService } from '../../../services/supabase.service';
-import { AuthSession, User } from '@supabase/supabase-js';
+import { Profile } from '../../../services/supabase.service';
+import { User } from '@supabase/supabase-js';
 import { VaultCode } from '../../../../models/vault-code';
 import { CodeForm } from '../../../../models/code-form';
 import { Worker } from '../../../../models/worker';
@@ -42,7 +42,6 @@ export class AssignCodes {
 
   constructor(
     private readonly codeService: CodeService,
-    private readonly supabase: SupabaseService,
     private readonly formBuilder: FormBuilder
   ) {}
 

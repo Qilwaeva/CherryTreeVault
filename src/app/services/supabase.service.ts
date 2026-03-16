@@ -25,6 +25,7 @@ export class SupabaseService {
   workerStatsTable = '';
   lastWorkerStatsTable = '';
   activeWorkerStatsTable = '';
+  hintsTable = '';
   baseUrl = '';
 
   constructor() {
@@ -36,6 +37,7 @@ export class SupabaseService {
     this.workerStatsTable = environment.top_worker_stats;
     this.lastWorkerStatsTable = environment.last_worker_stats;
     this.activeWorkerStatsTable = environment.active_worker_stats;
+    this.hintsTable = environment.hints_table_name;
     this.baseUrl = environment.api.base;
   }
 
@@ -347,7 +349,7 @@ export class SupabaseService {
   // Get vault total codes, codes tested, and codes waiting
   async getVaultStats(vaultName: string): Promise<any> {
     let dataTotal = await this.supabase.from(this.vaultCodeTable).select('*', { count: 'exact', head: true }).eq('vaultName', vaultName);
-    let dataInvalid = await this.supabase
+    let dataTested = await this.supabase
       .from(this.vaultCodeTable)
       .select('*', { count: 'exact', head: true })
       .eq('vaultName', vaultName)
@@ -363,12 +365,18 @@ export class SupabaseService {
       .select('*', { count: 'exact', head: true })
       .eq('vaultName', vaultName)
       .eq('status', 'not-started');
+    let dataHints = await this.supabase
+      .from(this.vaultCodeTable)
+      .select('*', { count: 'exact', head: true })
+      .eq('vaultName', vaultName)
+      .like('status', 'hint-invalid&');
     let vaultData = await this.supabase.from(this.vaultsTable).select('*').eq('vault_name', vaultName).single();
     return {
       total: dataTotal.count,
-      invalid: dataInvalid.count,
+      tested: dataTested.count,
       assigned: dataAssigned.count,
       remaining: dataRemaining.count,
+      hintRemoved: dataHints.count,
       vaultData: vaultData,
     };
   }
@@ -409,5 +417,29 @@ export class SupabaseService {
   async getCodebyCode(code: string, vaultName: string) {
     let data = await this.supabase.from(this.vaultCodeTable).select('*').eq('code', code).eq('vaultName', vaultName).single();
     return data.data;
+  }
+
+  async invalidateCodesFromStart(hintValue: string, activeVault: string, managerName: string) {
+    let data = await this.supabase
+      .from(this.vaultCodeTable)
+      .update([
+        {
+          status: 'hint-invalid-' + managerName,
+        },
+      ])
+      .eq('vaultName', activeVault)
+      .eq('status', 'not-started')
+      .not('code', 'like', hintValue + '%');
+    return data.data;
+  }
+
+  async saveHint(hintValue: string, managerName: string) {
+    await this.supabase
+      .from(this.hintsTable)
+      .insert([{ hint_value: hintValue, manager_username: managerName }])
+      .select()
+      .then(({ data }) => {
+        return data;
+      });
   }
 }

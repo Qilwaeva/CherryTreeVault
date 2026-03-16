@@ -14,11 +14,12 @@ import { AssignCodes } from './assign-codes/assign-codes';
 import { Worker } from '../../../models/worker';
 import { Vault } from '../../../models/vault';
 import { CheckCodes } from './check-codes/check-codes';
+import { AddHints } from './add-hints/add-hints';
 
 @Component({
   selector: 'current-component',
   templateUrl: './current-component.html',
-  imports: [CommonModule, ReactiveFormsModule, ClipboardModule, MarkdownModule, ManageCodes, AssignCodes, CheckCodes],
+  imports: [CommonModule, ReactiveFormsModule, ClipboardModule, MarkdownModule, ManageCodes, AssignCodes, CheckCodes, AddHints],
   standalone: true,
 })
 export class CurrentComponent {

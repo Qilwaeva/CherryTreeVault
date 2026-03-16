@@ -1,0 +1,38 @@
+<div class="items-center sm:pr-8">
+  <div class="flex flex-row justify-center items-center">
+    <div class="text-error font-bold m-1">STOP!</div>
+    Any data submitted here will mark many codes as invalid, be very sure you have your data right!
+  </div>
+  <div class="flex justify-center items-center my-1">
+    If the hint is not about the start of the code or skips any spots, please do not use this and reach out to Qilwaeva on discord instead!
+  </div>
+  <div class="items-center sm:pr-8">
+    <form [formGroup]="addHintsForm" class="form-widget">
+      <div class="flex justify-center">
+        <div>
+          <div class="flex row py-1">
+            <div class="flex items-center pr-2">
+              <label for="hintValue">Known start of code:</label>
+            </div>
+            <input
+              type="number"
+              id="hintValue"
+              formControlName="hintValue"
+              class="input border border-base-content bg-base-200 w-48 input-md ml-auto"
+            />
+          </div>
+          <button
+            class="flex btn mx-auto bg-primary text-primary-content hover:bg-secondary hover:text-secondary-content"
+            type="submit"
+            (click)="onSubmitRequest()"
+          >
+            {{ submitLoading ? "Loading..." : "Submit" }}
+          </button>
+          @if (displayOutput === true) {
+          <div class="flex justify-center items-center">{{codesRemoved}} codes were removed from the pool.</div>
+          }
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

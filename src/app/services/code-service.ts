@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { VaultCode } from '../../models/vault-code';
 import { SupabaseService } from './supabase.service';
+import { VaultStats } from '../../models/vault-stats';
 
 @Injectable({ providedIn: 'root' })
 export class CodeService {
@@ -210,5 +211,39 @@ export class CodeService {
   async getWorkerCodeCount(username: string, status: string) {
     let count = await this.supabase.getCodeCountByWorker(username, status);
     return count;
+  }
+
+  async applyHintFromStart(hintValue: string, managerName: string) {
+    let activeVault = await this.supabase.getSetting('active_vault');
+    let res = await this.supabase.invalidateCodesFromStart(hintValue, activeVault, managerName);
+    await this.supabase.saveHint(hintValue, managerName);
+    return res;
+  }
+
+  async getVaultStats(vaultName: string) {
+    let vaultStats: VaultStats = {
+      totalCodes: 0,
+      testedCodes: 0,
+      totalAssignedCodes: 0,
+      remainingCodes: 0,
+      removedByHints: 0,
+      vaultData: null,
+    };
+    await this.supabase.getVaultStats(vaultName).then((stats) => {
+      vaultStats = {
+        totalCodes: stats.total,
+        testedCodes: stats.tested,
+        totalAssignedCodes: stats.assigned,
+        remainingCodes: stats.remaining,
+        removedByHints: stats.hintRemoved,
+        vaultData: stats.vaultData.data,
+      };
+    });
+    return vaultStats;
+  }
+
+  async getSetting(settingName: string) {
+    let settingVal = await this.supabase.getSetting(settingName);
+    return settingVal;
   }
 }

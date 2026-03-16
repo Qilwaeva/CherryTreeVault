@@ -42,16 +42,23 @@
         ></manage-codes>
       </div>
     </div>
-    <div class="collapse collapse-plus bg-base-100 border-base-300 border-2">
+    <!-- <div class="collapse collapse-plus bg-base-100 border-base-300 border-2">
       <input type="radio" name="my-accordion-3" />
       <div class="collapse-title font-semibold text-center text-info-content">Check Codes</div>
       <div class="collapse-content text-sm">
-        <!-- <check-codes
+        <check-codes
           class=""
           [user]="user()"
           [profile]="profile()"
           (checkActive)="getActiveWorkers(); checkActiveVault(); getAllWorkers()"
-        ></check-codes> -->
+        ></check-codes>
+      </div>
+    </div> -->
+    <div class="collapse collapse-plus bg-base-100 border-base-300 border-2">
+      <input type="radio" name="my-accordion-3" />
+      <div class="collapse-title font-semibold text-center text-info-content">Apply Hints</div>
+      <div class="collapse-content text-sm">
+        <add-hints class="" [profile]="profile()"></add-hints>
       </div>
     </div>
   </div>
