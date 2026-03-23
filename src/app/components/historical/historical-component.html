@@ -27,7 +27,7 @@
     </div>
     <div class="col-span-1">
       <div class="text-lg text-center font-bold">Current Vault Codes</div>
-      @if (currVaultName().length > 0) {
+      @if (currVaultName() != null && currVaultName().length > 0) {
       <div class="text-center">Vault Name: {{currVaultName()}}</div>
       }
       <table class="table-auto border border-collapse mx-auto">

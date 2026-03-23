@@ -36,6 +36,7 @@ export class ManageCodes {
   validateCodeForm!: FormGroup;
   validateError = signal<string>('');
   validateFeedback = signal<string>('');
+  validateLoading = false;
 
   invalidCodeList: InvalidList[] = [];
   selectAll = false;
@@ -83,6 +84,7 @@ export class ManageCodes {
   }
 
   validateCode() {
+    this.validateLoading = true;
     this.validateFeedback.set('');
     this.validateError.set('');
     let code = this.validateCodeForm.value.code as string;
@@ -119,6 +121,7 @@ export class ManageCodes {
         });
       }
     });
+    this.validateLoading = false;
   }
 
   changeFormatting(event: any) {

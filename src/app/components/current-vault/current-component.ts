@@ -54,7 +54,7 @@ export class CurrentComponent {
     this.getAllWorkers();
     this.vaultForm = this.formBuilder.group({
       vaultName: '',
-      codeLength: 0,
+      totalDigits: 0,
       excludeDigits: [],
     });
   }
