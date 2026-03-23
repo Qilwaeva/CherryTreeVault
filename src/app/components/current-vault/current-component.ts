@@ -19,7 +19,7 @@ import { AddHints } from './add-hints/add-hints';
 @Component({
   selector: 'current-component',
   templateUrl: './current-component.html',
-  imports: [CommonModule, ReactiveFormsModule, ClipboardModule, MarkdownModule, ManageCodes, AssignCodes, CheckCodes, AddHints],
+  imports: [CommonModule, ReactiveFormsModule, ClipboardModule, MarkdownModule, ManageCodes, AssignCodes, AddHints],
   standalone: true,
 })
 export class CurrentComponent {
@@ -54,7 +54,7 @@ export class CurrentComponent {
     this.getAllWorkers();
     this.vaultForm = this.formBuilder.group({
       vaultName: '',
-      totalDigits: 0,
+      codeLength: 0,
       excludeDigits: [],
     });
   }
@@ -81,16 +81,16 @@ export class CurrentComponent {
   async generateVault() {
     this.generateLoading = true;
     let vaultName = this.vaultForm.value.vaultName as string;
-    let totalDigits = this.vaultForm.value.totalDigits as number;
+    let codeLength = this.vaultForm.value.totalDigits as number;
     let excludeNum = this.vaultForm.value.excludeDigits as string;
     let excludeDigits = excludeNum.split('');
-    this.generateCodes(excludeDigits, totalDigits, vaultName, excludeNum);
+    this.generateCodes(excludeDigits, codeLength, vaultName, excludeNum);
   }
 
-  async generateCodes(excludeDigits: string[], totalDigits: number, vaultName: string, excludeNum: string) {
+  async generateCodes(excludeDigits: string[], codeLength: number, vaultName: string, excludeNum: string) {
     try {
-      let generate = await this.codeService.generateAllCodes(excludeDigits, totalDigits, vaultName);
-      await this.supabase.createVault(vaultName, this.profile()!.username, excludeNum, totalDigits);
+      let generatedCodes = await this.codeService.generateAllCodes(excludeDigits, codeLength, vaultName);
+      await this.supabase.createVault(vaultName, this.profile()!.username, excludeNum, codeLength, generatedCodes);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
