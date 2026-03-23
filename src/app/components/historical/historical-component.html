@@ -25,61 +25,63 @@
         </tbody>
       </table>
     </div>
-    <div class="col-span-1">
-      <div class="text-lg text-center font-bold">Current Vault Codes</div>
-      @if (currVaultName() != null && currVaultName().length > 0) {
-      <div class="text-center">Vault Name: {{currVaultName()}}</div>
-      }
-      <table class="table-auto border border-collapse mx-auto">
-        <thead>
-          <tr>
-            <th class="p-1 border">Worker Name</th>
-            <th class="p-1 border">Codes Tested</th>
-            <th class="p-1 border">Correct Codes</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (currentWorkerCodes().length == 0) {
-          <tr>
-            <div class="w-full text-center">No codes yet!</div>
-          </tr>
-          } @for (worker of currentWorkerCodes(); track worker.id) {
-          <tr>
-            <td class="p-1 border">{{worker.username}}</td>
-            <td class="p-1 border">{{worker.invalidCodes}}</td>
-            <td class="p-1 border">{{worker.validCodes}}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-    <div class="col-span-1 sm:col-start-2">
-      <div class="text-lg text-center font-bold">Last Vault Codes</div>
-      @if (lastVaultName().length > 0) {
-      <div class="text-center">Vault Name: {{lastVaultName()}}</div>
-      }
-      <table class="table-auto border border-collapse mx-auto">
-        <thead>
-          <tr>
-            <th class="p-1 border">Worker Name</th>
-            <th class="p-1 border">Codes Tested</th>
-            <th class="p-1 border">Correct Codes</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (lastWorkerCodes().length == 0) {
-          <tr>
-            <div class="w-full text-center">No codes yet!</div>
-          </tr>
-          } @for (worker of lastWorkerCodes(); track worker.id) {
-          <tr>
-            <td class="p-1 border">{{worker.username}}</td>
-            <td class="p-1 border">{{worker.invalidCodes}}</td>
-            <td class="p-1 border">{{worker.validCodes}}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
+    <div class="flex flex-col space-y-6">
+      <div class="col-span-1">
+        <div class="text-lg text-center font-bold">Current Vault Codes</div>
+        @if (currVaultName() != null && currVaultName().length > 0) {
+        <div class="text-center">Vault Name: {{currVaultName()}}</div>
+        }
+        <table class="table-auto border border-collapse mx-auto">
+          <thead>
+            <tr>
+              <th class="p-1 border">Worker Name</th>
+              <th class="p-1 border">Codes Tested</th>
+              <th class="p-1 border">Correct Codes</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (currentWorkerCodes().length == 0) {
+            <tr>
+              <div class="w-full text-center">No codes yet!</div>
+            </tr>
+            } @for (worker of currentWorkerCodes(); track worker.id) {
+            <tr>
+              <td class="p-1 border">{{worker.username}}</td>
+              <td class="p-1 border">{{worker.invalidCodes}}</td>
+              <td class="p-1 border">{{worker.validCodes}}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="col-span-1 sm:col-start-2">
+        <div class="text-lg text-center font-bold">Last Vault Codes</div>
+        @if (lastVaultName().length > 0) {
+        <div class="text-center">Vault Name: {{lastVaultName()}}</div>
+        }
+        <table class="table-auto border border-collapse mx-auto">
+          <thead>
+            <tr>
+              <th class="p-1 border">Worker Name</th>
+              <th class="p-1 border">Codes Tested</th>
+              <th class="p-1 border">Correct Codes</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (lastWorkerCodes().length == 0) {
+            <tr>
+              <div class="w-full text-center">No codes yet!</div>
+            </tr>
+            } @for (worker of lastWorkerCodes(); track worker.id) {
+            <tr>
+              <td class="p-1 border">{{worker.username}}</td>
+              <td class="p-1 border">{{worker.invalidCodes}}</td>
+              <td class="p-1 border">{{worker.validCodes}}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
