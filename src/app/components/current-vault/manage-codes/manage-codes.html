@@ -12,7 +12,7 @@
       class="flex btn btn-md bg-primary text-primary-content m-1 text-sm mx-auto hover:bg-secondary hover:text-secondary-content"
       (click)="validateCode()"
     >
-      Select Valid
+      {{ validateLoading ? "Loading..." : "Select Valid" }}
     </button>
     @if (validateError().length > 0) {
     <div class="text-error text-center">Validation Error: {{validateError()}}</div>
