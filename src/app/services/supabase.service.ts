@@ -147,10 +147,12 @@ export class SupabaseService {
     return this.supabase.storage.from('avatars').upload(filePath, file);
   }
 
-  async createVault(vaultName: string, createdBy: string, excludeDigits: string, codeCount: number) {
+  async createVault(vaultName: string, createdBy: string, excludeDigits: string, codeLength: number, codeCount: number) {
     await this.supabase
       .from(this.vaultsTable)
-      .insert([{ vault_name: vaultName, created_by: createdBy, exclude_digits: excludeDigits, code_count: codeCount }])
+      .insert([
+        { vault_name: vaultName, created_by: createdBy, exclude_digits: excludeDigits, code_count: codeCount, code_length: codeLength },
+      ])
       .select()
       .then(({ data }) => {
         return data;
