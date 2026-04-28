@@ -160,7 +160,6 @@ export class SupabaseService {
   }
 
   async insertCodes(codes: VaultCode[]) {
-    // for (let code of codes) {
     await this.supabase
       .from(this.vaultCodeTable)
       .insert(codes)
@@ -168,7 +167,6 @@ export class SupabaseService {
       .then(({ data }) => {
         return data;
       });
-    // }
   }
 
   async getAllCodes() {
@@ -336,7 +334,7 @@ export class SupabaseService {
     return data.data.setting_value;
   }
 
-  async createNewVault(name: string) {
+  async setSettingsVault(name: string) {
     let data = await this.supabase
       .from(this.settingsTable)
       .update([

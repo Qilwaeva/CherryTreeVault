@@ -54,15 +54,17 @@ export class CodeService {
       currentCode = this.addLeadingZeroes(nextCode, startingCode);
     } while (currentCode.length == codeLength);
 
+    let validCodeCount = validCodes.length;
+    // let chunk = 1;
     let chunk = 10000;
     do {
       let submitCodes = validCodes.splice(0, chunk);
       let codeWait = await this.supabase.insertCodes(submitCodes);
     } while (validCodes.length > 0);
 
-    let vaultConfirm = await this.supabase.createNewVault(vaultName);
+    let vaultConfirm = await this.supabase.setSettingsVault(vaultName);
 
-    return validCodes.length;
+    return validCodeCount;
   }
 
   getValidDigits(excludeDigits: string[]) {
