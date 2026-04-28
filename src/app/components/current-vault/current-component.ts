@@ -102,6 +102,25 @@ export class CurrentComponent {
     }
   }
 
+  async generateMissing() {
+    let excludeDigits = ['1', '3', '6', '8', '9'];
+    let codeLength = 7;
+    let vaultName = 'April 24, 2026';
+    let excludeNum = '13689';
+    try {
+      let generatedCodes = await this.codeService.generateAllCodes(excludeDigits, codeLength, vaultName);
+      await this.supabase.createVault(vaultName, this.profile()!.username, excludeNum, codeLength, generatedCodes);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+        this.generateLoading = false;
+      }
+    } finally {
+      this.generateLoading = false;
+      this.checkActiveVault();
+    }
+  }
+
   getActiveWorkers() {
     this.supabase.getCurrentWorkers().then((res) => {
       if (res.data != null && res.data.length > 0) {
